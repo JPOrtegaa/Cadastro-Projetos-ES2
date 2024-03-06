@@ -122,45 +122,45 @@ new Vue({
         validarCampos(){
             let valido = true;
 
-            if (this.nomeProfissional == ""){
+            if (!this.nomeProfissional || this.nomeProfissional.trim() == ""){
                 $("#nomeProfissional").addClass("invalido");
                 valido = false;
             }
 
-            if (this.enderecoProfissional == ""){
+            if (!this.enderecoProfissional || this.enderecoProfissional.trim() == ""){
                 $("#enderecoProfissional").addClass("invalido");
                 valido = false;
             }
 
-            if (this.dataNascimentoProfissional == ""){
+            if (!this.dataNascimentoProfissional || this.dataNascimentoProfissional == ""){
                 $("#dataNascimentoProfissional").addClass("invalido");
                 valido = false;
             }
 
-            if (this.generoProfissional == ""){
+            if (!this.generoProfissional || this.generoProfissional.trim() == ""){
                 $("#generoProfissional").addClass("invalido");
                 valido = false;
             }
 
             if (this.generoProfissional == "Outro"){
-                if(this.generoProfissionalTexto == ""){
+                if(!this.generoProfissionalTexto || this.generoProfissionalTexto.trim() == ""){
                     $("#generoProfissionalTexto").addClass("invalido");
                     valido = false;
                 }
             }
 
-            if (this.racaProfissional == ""){
+            if (!this.racaProfissional || this.racaProfissional.trim() == ""){
                 $("#racaProfissional").addClass("invalido");
                 valido = false;
             }
 
-            if (this.especialidadeProfissional == ""){
+            if (!this.especialidadeProfissional  || this.especialidadeProfissional.trim() == ""){
                 $("#especialidadeProfissional").addClass("invalido");
                 valido = false;
             }
 
             if (this.especialidadeProfissional == "Outro"){
-                if(this.especialidadeProfissionalTexto == ""){
+                if(!this.especialidadeProfissionalTexto  || this.especialidadeProfissionalTexto.trim() == ""){
                     $("#especialidadeProfissionalTexto").addClass("invalido");
                     valido = false;
                 }

@@ -123,10 +123,14 @@ new Vue({
         },
 
         validarCampos(){
-            let valido = true;
+            let valido = true;  
 
-            if (this.nomeTime == ""){
+            if (!this.nomeTime || this.nomeTime.trim() == ""){
                 $("#nomeTime").addClass("invalido");
+                valido = false;
+            }
+            if (this.listaProfissionaisDoTime.length  < 1){
+                $("#listaProfissionaisDoTime").addClass("invalido");
                 valido = false;
             }
 

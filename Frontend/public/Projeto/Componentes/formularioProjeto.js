@@ -103,9 +103,40 @@ new Vue({
         validarCampos(){
             let valido = true;
 
-            if (this.nomeTime == ""){
-                $("#nomeTime").addClass("invalido");
+            if (!this.nomeProjeto || this.nomeProjeto.trim() == ""){
+                $("#nomeProjeto").addClass("invalido");
                 valido = false;
+            }
+            if (!this.nomeCliente || this.nomeCliente.trim() ==  ""){
+                $("#nomeCliente").addClass("invalido");
+                valido = false;
+            }
+            if (!this.objetivo || this.objetivo.trim() ==  ""){
+                $("#objetivo").addClass("invalido");
+                valido = false;
+            }
+            if (!this.dataInicio || this.dataInicio == ""){
+                $("#dataInicio").addClass("invalido");
+                valido = false;
+            }
+            if (!this.dataFim || this.dataFim == ""){
+                $("#dataFim").addClass("invalido");
+                valido = false;
+            }
+            if (!this.valor || this.valor.trim() ==  ""){
+                $("#valor").addClass("invalido");
+                valido = false;
+            }
+            if (!this.timeResponsavel || this.timeResponsavel == ""){
+                $("#timeResponsavel").addClass("invalido");
+                valido = false;
+            }
+
+            if(this.dataFim < this.dataInicio){
+                $("#dataInicio").addClass("invalido");
+                $("#dataFim").addClass("invalido");
+                valido = false;
+                alert("A data final não pode ser anterior à inicial")
             }
 
             if(valido){
