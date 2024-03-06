@@ -86,13 +86,13 @@ new Vue({
             await this.getInfo();
 
 
-        EventBus.$on('confirmarCriacaoEdicaoProfissional',() => {
+        EventBus.$on('confirmarCriacaoEdicao',() => {
             if(this.validarCampos()){
                 this.enviarRequisicaoCriacaoEdicao();
             }
         });
 
-        EventBus.$on('excluirProfissional',() => {
+        EventBus.$on('excluir',() => {
             this.excluirProfissional();
         });
     },

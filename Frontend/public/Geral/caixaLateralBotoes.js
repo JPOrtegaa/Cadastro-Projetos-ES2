@@ -35,12 +35,12 @@ new Vue({
             window.location.href = document.referrer
         },
         confirmar(){
-            // Emite um sinal para formularioProfissional.js verificar se os campos estão válidos
-            EventBus.$emit('confirmarCriacaoEdicaoProfissional');
+            // Emite um sinal para verificar se os campos estão válidos
+            EventBus.$emit('confirmarCriacaoEdicao');
         },
         excluir(){
             if (confirm("Deseja excluir?") == true){
-                EventBus.$emit('excluirProfissional');
+                EventBus.$emit('excluir');
             }
         }
     }

@@ -16,6 +16,22 @@ app.get('/listarProfissionais', async(req, res) => {
     res.sendFile(path.join(__dirname, 'public', '/Profissional/listaProfissionais.html'));
 });
 
+app.get('/listarTimes', async(req, res) => {
+    res.sendFile(path.join(__dirname, 'public', '/Time/listaTimes.html'));
+});
+
+app.get('/time/:acao/:id', async(req, res) => {
+    const acao = req.params.acao;
+    if(acao == 'adicionar' || acao == 'remover' || acao == 'editar' || acao == 'visualizar')
+        res.sendFile(path.join(__dirname, 'public', './time/time.html'));
+    else 
+        res.send(`Ação "${acao}" não suportada.`); 
+});
+
+app.get('/time/adicionar', async(req, res) => {
+     res.sendFile(path.join(__dirname, 'public', './time/time.html'));
+});
+
 
 app.get('/profissional/:acao/:id', async(req, res) => {
     const acao = req.params.acao;
