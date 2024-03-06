@@ -31,24 +31,38 @@ new Vue({
                         <select class="form-select" v-model="generoProfissional" id="generoProfissional" :disabled="disable">
                             <option>Masculino</option>
                             <option>Feminino</option>
+                            <option>Não-binario</option>
                             <option>Outro</option>
+                            <option>Não informar</option>
                         </select>
                     </div>
 
                     <div class="col-6" v-if="generoProfissional == 'Outro'">
                         <label class="form-label">Especifique</label>
-                        <input type="text" class="form-control" v-model="generoProfissionalTexto" id="generoProfissionalTexto" placeholder="Especifique o gênero" :disabled="disable">
+                        <input type="text" class="form-control" v-model="generoProfissionalTexto" id="generoProfissionalTexto" placeholder="Especifique" :disabled="disable">
                     </div>
 
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Raça</label>
-                    <select class="form-select" v-model="racaProfissional" id="racaProfissional" :disabled="disable">
-                        <option>Opção 1</option>
-                        <option>Opção 2</option>
-                        <option>Opção 3</option>
-                    </select>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label class="form-label">Raça</label>
+                        <select class="form-select" v-model="racaProfissional" id="racaProfissional" :disabled="disable">
+                            <option>Branca</option>
+                            <option>Negra</option>
+                            <option>Parda</option>
+                            <option>Amarela</option>
+                            <option>Indígena</option>
+                            <option>Outro</option>
+                            <option>Não informar</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6" v-if="racaProfissional == 'Outro'">
+                        <label class="form-label">Especifique</label>
+                        <input type="text" class="form-control" v-model="racaProfissionalTexto" id="racaProfissionalTexto" placeholder="Especifique" :disabled="disable">
+                    </div>
+
                 </div>
 
                 <div class="row mb-3">
@@ -65,7 +79,7 @@ new Vue({
 
                     <div class="col-6" v-if="especialidadeProfissional == 'Outro'">
                         <label class="form-label">Especifique</label>
-                        <input type="text" class="form-control" id="especialidadeProfissionalTexto" v-model="especialidadeProfissionalTexto" placeholder="Especifique a especialidade">
+                        <input type="text" class="form-control" id="especialidadeProfissionalTexto" v-model="especialidadeProfissionalTexto" placeholder="Especifique">
                     </div>
                 </div>
             </div>
@@ -81,9 +95,10 @@ new Vue({
             generoProfissional:'',
             generoProfissionalTexto:'',
             racaProfissional:'',
+            racaProfissionalTexto:'',
             especialidadeProfissional:'',
             especialidadeProfissionalTexto:'',
-            disable: true
+            disable: false
         }
     },
     mounted:async function(){
@@ -175,6 +190,13 @@ new Vue({
                 }
             }
 
+            if (this.racaProfissional == "Outro"){
+                if(!this.racaProfissionalTexto  || this.racaProfissionalTexto.trim() == ""){
+                    $("#racaProfissionalTexto").addClass("invalido");
+                    valido = false;
+                }
+            }
+
             if(valido){
                 return true;
             }
@@ -188,7 +210,7 @@ new Vue({
                 endereco:       this.enderecoProfissional,
                 dataNascimento: this.dataNascimentoProfissional,
                 genero:         this.generoProfissional == "Outro" ? this.generoProfissionalTexto.trim() : this.generoProfissional,
-                raca:           this.racaProfissional,
+                raca:           this.racaProfissional == "Outro" ? this.racaProfissionalTexto.trim() : this.racaProfissional,
                 especialidade:  this.especialidadeProfissional == "Outro" ? this.especialidadeProfissionalTexto.trim() : this.especialidadeProfissional,
               };
           
