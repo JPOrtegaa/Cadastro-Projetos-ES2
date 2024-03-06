@@ -5,25 +5,30 @@ new Vue({
         `
         <div class="col-10 offset-2">
             <div class="conteudo mt-3">
+                <div v-if="disable == true" class="mb-3 col-2">
+                    <label class="form-label">ID</label>
+                    <input type="number" class="form-control" v-model="idProfissional" id="idProfissional" :disabled="disable" >
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label">Nome</label>
-                    <input type="text" class="form-control" v-model="nomeProfissional" id="nomeProfissional" placeholder="Nome do profissional">
+                    <input type="text" class="form-control" v-model="nomeProfissional" id="nomeProfissional" placeholder="Nome do profissional" :disabled="disable">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Endereço</label>
-                    <input type="text" class="form-control" v-model="enderecoProfissional" id="enderecoProfissional" placeholder="Endereço do profissional">
+                    <input type="text" class="form-control" v-model="enderecoProfissional" id="enderecoProfissional" placeholder="Endereço do profissional" :disabled="disable">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Data de nascimento</label>
-                    <input type="date" class="form-control" v-model="dataNascimentoProfissional" id="dataNascimentoProfissional">
+                    <input type="date" class="form-control" v-model="dataNascimentoProfissional" id="dataNascimentoProfissional" :disabled="disable">
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-6">
                         <label class="form-label">Gênero</label>
-                        <select class="form-select" v-model="generoProfissional" id="generoProfissional">
+                        <select class="form-select" v-model="generoProfissional" id="generoProfissional" :disabled="disable">
                             <option>Masculino</option>
                             <option>Feminino</option>
                             <option>Outro</option>
@@ -32,14 +37,14 @@ new Vue({
 
                     <div class="col-6" v-if="generoProfissional == 'Outro'">
                         <label class="form-label">Especifique</label>
-                        <input type="text" class="form-control" v-model="generoProfissionalTexto" id="generoProfissionalTexto" placeholder="Especifique o gênero">
+                        <input type="text" class="form-control" v-model="generoProfissionalTexto" id="generoProfissionalTexto" placeholder="Especifique o gênero" :disabled="disable">
                     </div>
 
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Raça</label>
-                    <select class="form-select" v-model="racaProfissional" id="racaProfissional">
+                    <select class="form-select" v-model="racaProfissional" id="racaProfissional" :disabled="disable">
                         <option>Opção 1</option>
                         <option>Opção 2</option>
                         <option>Opção 3</option>
@@ -49,7 +54,7 @@ new Vue({
                 <div class="row mb-3">
                     <div class="col-6">
                         <label class="form-label">Especialidade</label>
-                        <select class="form-select" v-model="especialidadeProfissional" id="especialidadeProfissional">
+                        <select class="form-select" v-model="especialidadeProfissional" id="especialidadeProfissional" :disabled="disable">
                             <option>Analista de Sistemas</option>
                             <option>Desenvolvedor</option>
                             <option>Administrador de banco de dados</option>
@@ -65,7 +70,7 @@ new Vue({
                 </div>
             </div>
         </div>
-    
+
         `,
     data(){
         return {
@@ -77,11 +82,15 @@ new Vue({
             generoProfissionalTexto:'',
             racaProfissional:'',
             especialidadeProfissional:'',
-            especialidadeProfissionalTexto:''
+            especialidadeProfissionalTexto:'',
+            disable: true
         }
     },
     mounted:async function(){
         let tipo = window.location.pathname.split("/")[2]
+        if(tipo == 'visualizar')
+            this.disable = true;
+
         if( tipo != 'adicionar')
             await this.getInfo();
 

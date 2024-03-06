@@ -6,42 +6,47 @@ new Vue({
         <div class="col-10 offset-2">
             <div class="conteudo mt-4">
 
+                <div v-if="disable == true" class="mb-3 col-2">
+                    <label class="form-label">ID</label>
+                    <input type="number" class="form-control" v-model="idProjeto" id="idProjeto" :disabled="disable" >
+                </div>
+
                 <div class="row mb-3">
                     <div class=" col-6">
                         <label class="form-label">Nome do projeto</label>
-                        <input type="text" class="form-control" v-model="nomeProjeto" id="nomeProjeto" placeholder="Nome do projeto">
+                        <input type="text" class="form-control" v-model="nomeProjeto" id="nomeProjeto" placeholder="Nome do projeto" :disabled="disable" >
                     </div>
 
                     <div class=" col-6">
                         <label class="form-label">Nome do Cliente</label>
-                        <input type="text" class="form-control" v-model="nomeCliente" id="nomeCliente" placeholder="Nome do cliente">
+                        <input type="text" class="form-control" v-model="nomeCliente" id="nomeCliente" placeholder="Nome do cliente" :disabled="disable" >
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Objetivo</label>
-                    <textarea class="form-control" rows=5 v-model="objetivo" id="objetivo" placeholder="Objetivo"></textarea>
+                    <textarea class="form-control" rows=5 v-model="objetivo" id="objetivo" placeholder="Objetivo" :disabled="disable" ></textarea>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-4">
                         <label class="form-label">Data de inicio</label>
-                        <input type="date" class="form-control" v-model="dataInicio" id="dataInicio">
+                        <input type="date" class="form-control" v-model="dataInicio" id="dataInicio" :disabled="disable" >
                     </div>
 
                     <div class="col-4">
                         <label class="form-label">Data de termino</label>
-                        <input type="date" class="form-control" v-model="dataFim" id="dataFim">
+                        <input type="date" class="form-control" v-model="dataFim" id="dataFim" :disabled="disable" >
                     </div>
 
                     <div class="mb-3 col-4">
                         <label class="form-label">Valor do projeto</label>
-                        <input type="number" class="form-control" v-model="valor" id="valor">
+                        <input type="number" class="form-control" v-model="valor" id="valor" :disabled="disable" >
                     </div>
                 </div>
                 <div class="mb-3 col-7">
                     <label class="form-label">Time responsável</label>
-                    <select class="form-select" v-model="timeResponsavel" id="timeResponsavel">
+                    <select class="form-select" v-model="timeResponsavel" id="timeResponsavel" :disabled="disable" >
                         <option v-for="responsavel in timeResponsavel">{{ responsavel }}</option>
                     </select>
                 </div>
@@ -58,11 +63,15 @@ new Vue({
             dataInicio:'',
             dataFim:'',
             valor:'',
-            timeResponsavel:''
+            timeResponsavel:'',
+            disable: false
         }
     },
     mounted:async function(){
         let tipo = window.location.pathname.split("/")[2]
+        if(tipo == 'visualizar')
+            this.disable = true;
+
         if( tipo != 'adicionar')
             await this.getInfo();
 

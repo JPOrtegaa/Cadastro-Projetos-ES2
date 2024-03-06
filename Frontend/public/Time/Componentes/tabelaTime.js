@@ -17,6 +17,15 @@ new Vue({
                 <td>{{ item.id }}</td>
                 <td>{{ item.nome }}</td>
                 <td> 
+                  <a :href="item.linkVisualizacao">
+                    <button type="button" class="btn btn-primary m-0" >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                      </svg>
+                      Visualizar
+                    </button>
+                  </a>
                   <a :href="item.linkEdicao">
                     <button type="button" class="btn btn-warning m-0" >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-text" viewBox="0 0 16 16">
@@ -26,21 +35,15 @@ new Vue({
                       Editar
                     </button>
                   </a>
-
                   <a :href="item.linkExclusao">
                     <button class="btn btn-danger" type="button">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                         <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
                       </svg>
-
                       Excluir
-
                     </button>
                   </a>
-
-
-
                 </td>
             </tr>
           </tbody>
@@ -50,34 +53,15 @@ new Vue({
 
     data(){
       return {
-        itens:[],
-        numResultados: '',
-        ordem: '',
-        ordenacaoSelecionada:'',
-        itensPorPagina: '',
-        tipo: '',
-        itensSelecionados:[]
+        itens:[]
       }
     },
     mounted:async function(){
-      let urlParams = new URLSearchParams(window.location.search);
       await this.getItens();
-
-      // Atualiza o textinho antes da tabela que mostra ao usuário a quantidade de itens por págia e a ordem em que estão sendo exibidos
-      this.itensPorPagina  = urlParams.get("contagem");
-      let ordem = urlParams.get("ordem");
-      switch (ordem){
-          case '-id': this.ordenacaoSelecionada = 'ID decrescente'; break;
-          case '+id': this.ordenacaoSelecionada = 'ID crescente'; break;
-          case '-name': this.ordenacaoSelecionada = 'Título decrescente'; break;
-          case '+name': this.ordenacaoSelecionada = 'Título crescente'; break;
-      }
-
     },
 
     methods:{
       async getItens() {
-        await this.adicionaParametrosPadroes();
 
         let url = "http://localhost:3000/getTesteProfissionais"
 
@@ -92,43 +76,13 @@ new Vue({
               id: data[i].id,
               nome: data[i].nome,
               linkEdicao: `/time/editar/${data[i].id}`,
-              linkExclusao: `/time/remover/${data[i].id}`
+              linkExclusao: `/time/remover/${data[i].id}`,
+              linkVisualizacao: `/time/visualizar/${data[i].id}`
             }
 
             self.itens.push(obj);
           }
-          EventBus.$emit('atualizarNumResultados', data.length);
         });
       },
-
-
-      async adicionaParametrosPadroes(){
-        let urlParams = new URLSearchParams(window.location.search);
-        let contagem = urlParams.get("contagem");
-        let ordem = urlParams.get("ordem");
-        let refresh = false;
-        let pagina = urlParams.get('pagina');
-
-        if (contagem == null) {
-          urlParams.set("contagem", "10");
-          refresh = true;
-        }
-
-        if(ordem == null){
-          urlParams.set("ordem", "-id");
-          refresh = true;
-        }
-
-        if(pagina == null){
-          urlParams.set('pagina','1');
-          refresh= true;
-        }
-
-        if (refresh)
-          window.location.search = urlParams;
-
-      },
-
-      
       }
   })
