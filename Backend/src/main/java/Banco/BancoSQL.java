@@ -23,7 +23,7 @@ public class BancoSQL {
 	public void setConnection() {
 		try {
 			this.conexao = DriverManager.getConnection(this.db, this.user, this.password);
-			this.conexao.setAutoCommit(false);
+			//this.conexao.setAutoCommit(false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -66,7 +66,7 @@ public class BancoSQL {
 			System.out.println("UPDATE concluido!");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.err.println("Erro no INSERT!");
+			System.err.println("Erro no UPDATE!");
 		}
 	}
 	
