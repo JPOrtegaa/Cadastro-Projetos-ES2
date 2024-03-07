@@ -38,7 +38,7 @@ app.get('/time/adicionar', async(req, res) => {
 
 app.get('/profissional/:acao/:id', async(req, res) => {
     const acao = req.params.acao;
-    if(acao == 'adicionar' || acao == 'remover' || acao == 'editar' || acao == '    ')
+    if(acao == 'adicionar' || acao == 'remover' || acao == 'editar' || acao == 'visualizar')
         res.sendFile(path.join(__dirname, 'public', './profissional/profissional.html'));
     else 
         res.send(`Ação "${acao}" não suportada.`); 
