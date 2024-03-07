@@ -1,4 +1,5 @@
 import { EventBus } from '../../eventBus.js';
+import {URL_BASE, URL_GET_PROFISSIONAL, URL_PUT_PROFISSIONAL, URL_POST_PROFISSIONAL, URL_DELETE_PROFISSIONAL} from "../../constantes.js"
 new Vue({
     el:'#formularioProfissional',
     template:
@@ -29,11 +30,7 @@ new Vue({
                     <div class="col-6">
                         <label class="form-label">Gênero</label>
                         <select class="form-select" v-model="generoProfissional" id="generoProfissional" :disabled="disable">
-                            <option>Masculino</option>
-                            <option>Feminino</option>
-                            <option>Não-binario</option>
-                            <option>Outro</option>
-                            <option>Não informar</option>
+                        <option v-for="genero in listaGeneros">{{genero}}</option>
                         </select>
                     </div>
 
@@ -48,13 +45,7 @@ new Vue({
                     <div class="col-6">
                         <label class="form-label">Raça</label>
                         <select class="form-select" v-model="racaProfissional" id="racaProfissional" :disabled="disable">
-                            <option>Branca</option>
-                            <option>Negra</option>
-                            <option>Parda</option>
-                            <option>Amarela</option>
-                            <option>Indígena</option>
-                            <option>Outro</option>
-                            <option>Não informar</option>
+                            <option v-for="raca in listaRacas">{{raca}}</option>
                         </select>
                     </div>
 
@@ -69,11 +60,7 @@ new Vue({
                     <div class="col-6">
                         <label class="form-label">Especialidade</label>
                         <select class="form-select" v-model="especialidadeProfissional" id="especialidadeProfissional" :disabled="disable">
-                            <option>Analista de Sistemas</option>
-                            <option>Desenvolvedor</option>
-                            <option>Administrador de banco de dados</option>
-                            <option>Designer</option>
-                            <option>Outro</option>
+                            <option v-for="especialidade in listaEspecialidades">{{especialidade}}</option>
                         </select>
                     </div>
 
@@ -98,16 +85,22 @@ new Vue({
             racaProfissionalTexto:'',
             especialidadeProfissional:'',
             especialidadeProfissionalTexto:'',
-            disable: false
+            disable: false,
+            listaGeneros: ['Homem', 'Mulher','Não-binario','Outro', 'Não informar'],
+            listaRacas: ['Branca','Negra','Parda','Amarela','Indígena','Outro','Não informar'],
+            listaEspecialidades: ['Analista de Sistemas','Desenvolvedor','Administrador de banco de dados','Designer','Outro']
         }
     },
     mounted:async function(){
         let tipo = window.location.pathname.split("/")[2]
+        await this.getId();
+
         if(tipo == 'visualizar')
             this.disable = true;
 
         if( tipo != 'adicionar')
             await this.getInfo();
+
 
 
         EventBus.$on('confirmarCriacaoEdicao',() => {
@@ -121,25 +114,55 @@ new Vue({
         });
     },
     methods:{
-        async getInfo(){
-            // Só para testes
-        let id = 8
-        let url = `/getProfissional/${id}`
+        async getId(){
+            let id = window.location.pathname.split("/")[window.location.pathname.split("/").length-1]
+            this.idProfissional = id;
+        },
 
+
+        async getInfo(){
+
+        let url = URL_BASE + URL_GET_PROFISSIONAL + "/" + this.idProfissional
+        
+  
         // Armazena 'this' em uma variável para uso dentro da função de callback
         let self = this;
 
         axios.get(url).then(async (response) => {
-          let data = response.data;
-          self.idProfissional = data.id
-          self.nomeProfissional = data.nome
-          self.enderecoProfissional = data.endereco
-          self.dataNascimento = data.dataNascimento
+            let data = response.data;
+            //self.idProfissional = data.idProfissional
+            self.nomeProfissional = data.nomeProfissional
+            self.enderecoProfissional = data.enderecoProfissional
+            self.dataNascimentoProfissional = data.dataNascimento
 
-          // Tratar esses campos
-          self.generoProfissional = data.genero
-          self.racaProfissional = data.raca
-          self.especialidadeProfissional = data.especialidade
+            // Tratar esses campos
+            let genero = data.generoProfissional;
+            if (this.listaGeneros.includes(genero)){
+                self.generoProfissional = genero
+            }
+
+            else{
+                self.generoProfissional = "Outro"
+                self.generoProfissionalTexto = genero
+            }
+
+            let raca = data.racaProfissional;
+            if (this.listaRacas.includes(raca)){
+                self.racaProfissional = raca
+            }
+            else{
+                self.racaProfissional = "Outro"
+                self.racaProfissionalTexto = raca
+            }
+
+            let especialidade = data.especialidadeProfissional;
+            if (this.listaEspecialidades.includes(especialidade)){
+                self.especialidadeProfissional = especialidade
+            }
+            else{
+                self.especialidadeProfissional = "Outro"
+                self.especialidadeProfissionalTexto = especialidade
+            }
         });
     },
 
@@ -205,35 +228,51 @@ new Vue({
         },
 
         async enviarRequisicaoCriacaoEdicao(){
-            const corpoDaRequisicao = {
-                nome:           this.nomeProfissional,
-                endereco:       this.enderecoProfissional,
-                dataNascimento: this.dataNascimentoProfissional,
-                genero:         this.generoProfissional == "Outro" ? this.generoProfissionalTexto.trim() : this.generoProfissional,
-                raca:           this.racaProfissional == "Outro" ? this.racaProfissionalTexto.trim() : this.racaProfissional,
-                especialidade:  this.especialidadeProfissional == "Outro" ? this.especialidadeProfissionalTexto.trim() : this.especialidadeProfissional,
-              };
-          
-            const corpoJSON = JSON.stringify(corpoDaRequisicao);
-            
-            const url = "URL_NO_BACKEND"
-
-            try {
-                const response = await axios.put(url, {
-                    corpoJSON
-                });
+            let tipo = window.location.pathname.split("/")[2]
+            let corpoDaRequisicao = {};
+            if(tipo == 'editar'){
+                corpoDaRequisicao.idProfissional = this.idProfissional;
+                console.log(this.idProfissional)
+            }
                 
-                if (response.status == 200){
-                  alert("Salvo com sucesso!");
-                }
-    
-            } catch (error) {
-                alert('Erro ao salvar alterações: ' + error);
-              }
+
+            corpoDaRequisicao.nomeProfissional = this.nomeProfissional;
+            corpoDaRequisicao.enderecoProfissional = this.enderecoProfissional;
+            corpoDaRequisicao.dataNascimento = this.dataNascimentoProfissional;
+            corpoDaRequisicao.generoProfissional = this.generoProfissional == "Outro" ? this.generoProfissionalTexto.trim() : this.generoProfissional,
+            corpoDaRequisicao.racaProfissional = this.racaProfissional == "Outro" ? this.racaProfissionalTexto.trim() : this.racaProfissional,
+            corpoDaRequisicao.especialidadeProfissional =  this.especialidadeProfissional == "Outro" ? this.especialidadeProfissionalTexto.trim() : this.especialidadeProfissional
+
+            let url = ""
+
+            if(tipo == 'editar'){
+                url = URL_BASE + URL_PUT_PROFISSIONAL
+                const corpoJSON = JSON.stringify(corpoDaRequisicao);
+                console.log(corpoJSON)
+
+                try {
+                    const response = await axios.put(url, {corpoDaRequisicao});
+                    if (response.status == 200){ alert("Salvo com sucesso!"); }
+                } catch (error) { alert('Erro ao salvar alterações: ' + error); }
+            }
+            
+                
+            else if(tipo == "adicionar"){
+                url = URL_BASE + URL_POST_PROFISSIONAL
+                const corpoJSON = JSON.stringify(corpoDaRequisicao);
+                try {
+                    const response = await axios.post(url, {corpoJSON});
+                    if (response.status == 200){ alert("Salvo com sucesso!"); }
+                } catch (error) {
+                    alert('Erro ao salvar alterações: ' + error);
+                  }
+            }
         },
 
         async excluirProfissional(){
-            const url = `URL_NO_BACKEND/${this.idProfissional}`;
+
+
+            const url = URL_BASE + URL_DELETE_PROFISSIONAL + "/" + this.idProfissional;
 
             axios.delete(url)
             .then(response => {

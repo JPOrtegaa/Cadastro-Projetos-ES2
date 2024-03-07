@@ -1,4 +1,4 @@
-import { EventBus } from '../../eventBus.js';
+import {URL_BASE, URL_GET_LISTAR_TIMES} from "../../constantes.js"
 new Vue({
     el: '#tabela',
     template: `  
@@ -63,7 +63,7 @@ new Vue({
     methods:{
       async getItens() {
 
-        let url = "http://localhost:3000/getTesteProfissionais"
+        let url = URL_BASE + URL_GET_LISTAR_TIMES
 
         // Armazena 'this' em uma variável para uso dentro da função de callback
         let self = this;
@@ -73,11 +73,11 @@ new Vue({
 
           for (let i = 0; i < data.length; i++) {
             let obj = {
-              id: data[i].id,
-              nome: data[i].nome,
-              linkEdicao: `/time/editar/${data[i].id}`,
-              linkExclusao: `/time/remover/${data[i].id}`,
-              linkVisualizacao: `/time/visualizar/${data[i].id}`
+              id: data[i].idTime,
+              nome: data[i].nomeTime,
+              linkEdicao: `/time/editar/${data[i].idTime}`,
+              linkExclusao: `/time/remover/${data[i].idTime}`,
+              linkVisualizacao: `/time/visualizar/${data[i].idTime}`
             }
 
             self.itens.push(obj);

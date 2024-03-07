@@ -1,3 +1,4 @@
+import {URL_BASE, URL_GET_LISTAR_PROFISSIONAIS} from "../../constantes.js"
 new Vue({
     el: '#tabela',
     template: `  
@@ -64,23 +65,24 @@ new Vue({
 
     methods:{
       async getItens() {
-
-        let url = "http://localhost:3000/getTesteProfissionais"
+        
+        let url = URL_BASE + URL_GET_LISTAR_PROFISSIONAIS        
 
         // Armazena 'this' em uma variável para uso dentro da função de callback
         let self = this;
 
         axios.get(url).then(async (response) => {
           let data = response.data;
+          console.log(data)
 
           for (let i = 0; i < data.length; i++) {
             let obj = {
               id: data[i].idProfissional,
               nome: data[i].nomeProfissional,
               especialidade: data[i].especialidadeProfissional,
-              linkEdicao: `/profissional/editar/${data[i].id}`,
-              linkExclusao: `/profissional/remover/${data[i].id}`,
-              linkVisualizacao: `/profissional/visualizar/${data[i].id}`
+              linkEdicao: `/profissional/editar/${data[i].idProfissional}`,
+              linkExclusao: `/profissional/remover/${data[i].idProfissional}`,
+              linkVisualizacao: `/profissional/visualizar/${data[i].idProfissional}`
             }
 
             self.itens.push(obj);

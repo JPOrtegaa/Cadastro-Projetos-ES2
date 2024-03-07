@@ -1,3 +1,4 @@
+import { URL_BASE, URL_GET_TIME, URL_PUT_TIME, URL_POST_TIME,URL_DELETE_TIME, URL_GET_LISTAR_PROFISSIONAIS } from '../../constantes.js';
 import { EventBus } from '../../eventBus.js';
 new Vue({
     el:'#formularioTime',
@@ -69,6 +70,7 @@ new Vue({
     },
     mounted:async function(){
         let tipo = window.location.pathname.split("/")[2]
+        await this.getId();
         if(tipo == 'visualizar')
             this.disable = true;
 
@@ -91,18 +93,22 @@ new Vue({
             this.excluirTime();
         });
     },
+    async getId(){
+        let id = window.location.pathname.split("/")[window.location.pathname.split("/").length-1]
+        this.idTime = id;
+    },
     methods:{
         async getInfo(){
             // Só para testes
-            let id = 8
-            let url = `/getTime/${id}`
+
+            let url = URL_BASE + URL_GET_TIME + "/" + this.idTime
 
             // Armazena 'this' em uma variável para uso dentro da função de callback
             let self = this;
 
             axios.get(url).then(async (response) => {
             let data = response.data;
-            self.idTime = data.id
+            //self.idTime = data.id
             self.nomeTime = data.nome
             self.listaProfissionaisDoTime = data.profissionais
             });
@@ -122,14 +128,17 @@ new Vue({
         },
 
         async getTodosProfissionais(){
-            let url = `/getProfissionais/`
+            let url = URL_BASE + URL_GET_LISTAR_PROFISSIONAIS
 
             // Armazena 'this' em uma variável para uso dentro da função de callback
             let self = this;
+        
 
             axios.get(url).then(async (response) => {
             let data = response.data;
-                self.listaDeTodosOsProfissionais = data.profissionais;
+                for(let i = 0; i < data.length; i++){
+                    self.listaDeTodosOsProfissionais.push(data[i].nomeProfissional)
+                }
             });
         },
 
@@ -153,31 +162,42 @@ new Vue({
         },
 
         async enviarRequisicaoCriacaoEdicao(){
-            const corpoDaRequisicao = {
-                nome:           this.nomeTime,
-                profissionais:  this.listaProfissionaisDoTime
-              };
-          
-            const corpoJSON = JSON.stringify(corpoDaRequisicao);
-            
-            const url = "URL_NO_BACKEND"
+            let tipo = window.location.pathname.split("/")[2]
+            let corpoDaRequisicao = {};
+            if(tipo == 'editar'){
+                corpoDaRequisicao.idTime = this.idTime;
+            }
 
-            try {
-                const response = await axios.put(url, {
-                    corpoJSON
-                });
-                
-                if (response.status == 200){
-                  alert("Salvo com sucesso!");
-                }
-    
-            } catch (error) {
-                alert('Erro ao salvar alterações: ' + error);
-              }
+            corpoDaRequisicao.nomeTime = this.nomeTime;
+            corpoDaRequisicao.profissionais = this.listaProfissionaisDoTime;
+
+            let url = ""
+
+            if(tipo == 'editar'){
+                url = URL_BASE + URL_PUT_TIME
+                const corpoJSON = JSON.stringify(corpoDaRequisicao);
+                console.log(corpoJSON)
+
+                try {
+                    const response = await axios.put(url, {corpoDaRequisicao});
+                    if (response.status == 200){ alert("Salvo com sucesso!"); }
+                } catch (error) { alert('Erro ao salvar alterações: ' + error); }
+            }
+
+            else if(tipo == "adicionar"){
+                url = URL_BASE + URL_POST_TIME
+                const corpoJSON = JSON.stringify(corpoDaRequisicao);
+                try {
+                    const response = await axios.post(url, {corpoJSON});
+                    if (response.status == 200){ alert("Salvo com sucesso!"); }
+                } catch (error) {
+                    alert('Erro ao salvar alterações: ' + error);
+                  }
+            }
         },
 
         async excluirTime(){
-            const url = `URL_NO_BACKEND/${this.idTime}`;
+            const url = URL_BASE + URL_DELETE_TIME + "/" + this.idTime
 
             axios.delete(url)
             .then(response => {

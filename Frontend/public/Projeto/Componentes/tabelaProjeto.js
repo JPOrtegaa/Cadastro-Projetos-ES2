@@ -1,3 +1,5 @@
+import {URL_BASE, URL_GET_LISTAR_PROJETOS} from "../../constantes.js"
+
 new Vue({
     el: '#tabela',
     template: `  
@@ -62,7 +64,7 @@ new Vue({
     methods:{
       async getItens() {
 
-        let url = "http://localhost:3000/getTesteProfissionais"
+        let url = URL_BASE + URL_GET_LISTAR_PROJETOS
 
         // Armazena 'this' em uma variável para uso dentro da função de callback
         let self = this;
@@ -72,11 +74,11 @@ new Vue({
 
           for (let i = 0; i < data.length; i++) {
             let obj = {
-              id: data[i].id,
-              nome: data[i].nome,
-              linkEdicao: `/projeto/editar/${data[i].id}`,
-              linkExclusao: `/projeto/remover/${data[i].id}`,
-              linkVisualizacao: `/projeto/visualizar/${data[i].id}`,
+              id: data[i].idProjeto,
+              nome: data[i].nomeProjeto,
+              linkEdicao: `/projeto/editar/${data[i].idProjeto}`,
+              linkExclusao: `/projeto/remover/${data[i].idProjeto}`,
+              linkVisualizacao: `/projeto/visualizar/${data[i].idProjeto}`,
             }
 
             self.itens.push(obj);

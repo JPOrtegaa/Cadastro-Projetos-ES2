@@ -1,4 +1,6 @@
 import { EventBus } from '../../eventBus.js';
+import {URL_BASE, URL_GET_PROJETO, URL_POST_PROJETO, URL_DELETE_PROJETO, URL_GET_LISTAR_TIMES, URL_PUT_PROJETO} from "../../constantes.js";
+
 new Vue({
     el:'#formularioProjeto',
     template:
@@ -47,7 +49,7 @@ new Vue({
                 <div class="mb-3 col-7">
                     <label class="form-label">Time responsável</label>
                     <select class="form-select" v-model="timeResponsavel" id="timeResponsavel" :disabled="disable" >
-                        <option v-for="responsavel in timeResponsavel">{{ responsavel }}</option>
+                        <option v-for="responsavel in listaTimeResponsavel">{{ responsavel }}</option>
                     </select>
                 </div>
             </div>
@@ -64,15 +66,18 @@ new Vue({
             dataFim:'',
             valor:'',
             timeResponsavel:'',
+            listaTimeResponsavel: [],
             disable: false
         }
     },
     mounted:async function(){
+        await this.getId();
         let tipo = window.location.pathname.split("/")[2]
         if(tipo == 'visualizar')
             this.disable = true;
 
         if( tipo != 'adicionar')
+            await this.getTimes();
             await this.getInfo();
 
 
@@ -87,18 +92,35 @@ new Vue({
         });
     },
     methods:{
+        async getId(){
+            this.idProjeto = window.location.pathname.split("/")[window.location.pathname.split("/").length-1];
+        },
+
+        async getTimes(){
+            let url = URL_BASE + URL_GET_LISTAR_TIMES;
+            let self = this;
+
+            axios.get(url).then(async (response) => {
+                let data = response.data;
+                for(let i = 0; i < data.length; i++){
+                    self.listaTimeResponsavel.push(data[i].nomeTime)
+                }
+            });
+
+        },
+
         async getInfo(){
             // Só para testes
-            let id = 8
-            let url = `/projeto/getProjeto/${id}`
+
+            let url = URL_BASE + URL_GET_PROJETO + "/" + this.idProjeto
 
             // Armazena 'this' em uma variável para uso dentro da função de callback
             let self = this;
 
             axios.get(url).then(async (response) => {
                 let data = response.data;
-                self.idProjeto = data.id;
-                self.nomeProjeto = data.nome;
+                //self.idProjeto = data.idProjeto;
+                self.nomeProjeto = data.nomeProjeto;
                 self.nomeCliente = data.nomeCliente;
                 self.objetivo = data.objetivo;
                 self.dataInicio = data.dataInicio;
@@ -107,7 +129,6 @@ new Vue({
                 self.timeResponsavel = data.timeResponsavel
             });
         },
-
 
         validarCampos(){
             let valido = true;
@@ -156,36 +177,48 @@ new Vue({
         },
 
         async enviarRequisicaoCriacaoEdicao(){
-            const corpoDaRequisicao = {
-                nomeProjeto : this.nome,
-                nomeCliente : this.nomeCliente,
-                objetivo : this.objetivo,
-                dataInicio : this.dataInicio,
-                dataFim : this.dataFim,
-                valor : this.valor,
-                timeResponsavel : this.timeResponsavel
-            };
-          
-            const corpoJSON = JSON.stringify(corpoDaRequisicao);
-            
-            const url = "URL_NO_BACKEND"
+            let tipo = window.location.pathname.split("/")[2]
+            let corpoDaRequisicao = {};
+            if(tipo == 'editar'){
+                corpoDaRequisicao.idProjeto = this.idProjeto;
+            }
 
-            try {
-                const response = await axios.put(url, {
-                    corpoJSON
-                });
-                
-                if (response.status == 200){
-                  alert("Salvo com sucesso!");
-                }
-    
-            } catch (error) {
-                alert('Erro ao salvar alterações: ' + error);
-              }
+
+            corpoDaRequisicao.nomeProjeto = this.nome;
+            corpoDaRequisicao.nomeCliente = this.nomeCliente;
+            corpoDaRequisicao.objetivo = this.objetivo;
+            corpoDaRequisicao.dataInicio = this.dataInicio
+            corpoDaRequisicao.dataFim = this.dataFim
+            corpoDaRequisicao.valor =  this.valor 
+            corpoDaRequisicao.timeResponsavel =  this.timeResponsavel 
+
+            let url = ""
+
+            if(tipo == 'editar'){
+                url = URL_BASE + URL_PUT_PROJETO
+                const corpoJSON = JSON.stringify(corpoDaRequisicao);
+                console.log(corpoJSON)
+
+                try {
+                    const response = await axios.put(url, {corpoDaRequisicao});
+                    if (response.status == 200){ alert("Salvo com sucesso!"); }
+                } catch (error) { alert('Erro ao salvar alterações: ' + error); }
+            }
+
+            else if(tipo == "adicionar"){
+                url = URL_BASE + URL_POST_PROJETO
+                const corpoJSON = JSON.stringify(corpoDaRequisicao);
+                try {
+                    const response = await axios.post(url, {corpoJSON});
+                    if (response.status == 200){ alert("Salvo com sucesso!"); }
+                } catch (error) {
+                    alert('Erro ao salvar alterações: ' + error);
+                  }
+            }
         },
 
         async excluirProjeto(){
-            const url = `URL_NO_BACKEND/${this.idTime}`;
+            const url = URL_BASE + URL_DELETE_PROJETO + "/" + this.idProjeto
 
             axios.delete(url)
             .then(response => {
