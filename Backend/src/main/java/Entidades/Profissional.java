@@ -7,11 +7,24 @@ public class Profissional {
 	private long idProfissional;
 	private String nomeProfissional;
 	private String dataNascimento;
-	private String generoProfissional;
-	private String racaProfissional;
+	//private String generoProfissional;
+	//private String racaProfissional;
+	
+	private Genero generoProfissional;
+	
+	private Raca racaProfissional;
+	
 	private String especialidadeProfissional;
 	private String enderecoProfissional;
 	private ArrayList<Time> listaTime;
+	
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Profissional outro = (Profissional) o;
+        return idProfissional == outro.idProfissional;
+    }
 	
 	public long getIdProfissional() {
 		return idProfissional;
@@ -37,6 +50,24 @@ public class Profissional {
 		this.dataNascimento = dataNascimento;
 	}
 	
+	public Genero getGeneroProfissional() {
+		return generoProfissional;
+	}
+
+	public void setGeneroProfissional(Genero generoProfissional) {
+		this.generoProfissional = generoProfissional;
+	}
+
+	public Raca getRacaProfissional() {
+		return racaProfissional;
+	}
+
+	public void setRacaProfissional(Raca racaProfissional) {
+		this.racaProfissional = racaProfissional;
+	}
+	
+	
+	/*
 	public String getGeneroProfissional() {
 		return generoProfissional;
 	}
@@ -52,7 +83,7 @@ public class Profissional {
 	public void setRacaProfissional(String racaProfissional) {
 		this.racaProfissional = racaProfissional;
 	}
-	
+	*/
 	public String getEspecialidadeProfissional() {
 		return especialidadeProfissional;
 	}
@@ -69,11 +100,11 @@ public class Profissional {
 		this.enderecoProfissional = enderecoProfissional;
 	}
 
-	public ArrayList<Time> getListaTimes() {
+	public ArrayList<Time> getListaTime() {
 		return listaTime;
 	}
 
-	public void setListaTimes(ArrayList<Time> listaTimes) {
+	public void setListaTime(ArrayList<Time> listaTimes) {
 		this.listaTime = listaTimes;
 	}
 

@@ -13,6 +13,12 @@ public class ProfissionalServicos {
 		daoProfissional = new ProfissionalDao();
 	}
 	
+	public void inserirProfissional(Profissional p) {
+		
+		daoProfissional.postProfissional(p);
+		
+	}
+	
 	public Profissional obterProfissionalByID(Profissional p) {
 		Profissional pro;
 		pro = daoProfissional.getProfissionalByID(p);
@@ -24,10 +30,15 @@ public class ProfissionalServicos {
 		return daoProfissional.getTodosProfissionais();
 	}
 	
+	
 	public void atualizarProfissional(Profissional p) {
 		
 		daoProfissional.putProfissional(p);
 		
+	}
+	
+	public void deletarProfissional(Profissional p) {
+		daoProfissional.deleteProfissional(p);
 	}
 
 }

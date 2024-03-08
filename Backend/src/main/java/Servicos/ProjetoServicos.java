@@ -1,5 +1,16 @@
 package Servicos;
 
-public class ProjetoServicos {
+import DAO.ProjetoDao;
 
+public class ProjetoServicos {
+	
+	private ProjetoDao daoProjeto;
+	
+	public ProjetoServicos() {
+		daoProjeto = new ProjetoDao();
+	}
+	
+	
+	
+	
 }
