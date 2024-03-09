@@ -5,14 +5,37 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Banco.BancoSQL;
+import Entidades.Genero;
 import Entidades.Profissional;
+import Entidades.Raca;
 
 public class ProfissionalDao {
 	
 	private BancoSQL banco;
+	private GeneroDao daoGenero;
+	private RacaDao daoRaca;
 	
 	public ProfissionalDao() {
-		banco = new BancoSQL("root", "jp17", "es2-projeto1");
+		banco = new BancoSQL("root", "jp17", "es2-projeto1-final");
+		daoGenero = new GeneroDao();
+		daoRaca = new RacaDao();
+	}
+	
+	public void postProfissional(Profissional p) {
+		String query = "INSERT INTO Profissional (nomeProfissional, dataNascimento, "
+					 + "especialidadeProfissional, enderecoProfissional, Genero_idGenero, Raca_idRaca) "
+				 	 + "VALUES ('" + p.getNomeProfissional() + "', "
+				 	 + "'" + p.getDataNascimento() + "', "
+				 	 + "'" + p.getEspecialidadeProfissional() + "', "
+				 	 + "'" + p.getEnderecoProfissional() + "', "
+				 	 + p.getGeneroProfissional().getIdGenero() + ", "
+				 	 + p.getRacaProfissional().getIdRaca() + ");";
+		
+		banco.setConnection();
+		
+		banco.insert(query);
+		
+		banco.closeConnection();
 	}
 	
 	public Profissional getProfissionalByID(Profissional p) {
@@ -20,6 +43,8 @@ public class ProfissionalDao {
 		ResultSet rs;
 		
 		Profissional pro = null;
+		Genero g = null;
+		Raca r = null;
 		
 		banco.setConnection();
 		
@@ -28,12 +53,18 @@ public class ProfissionalDao {
 		try {
 			while(rs.next()) {
 				pro = new Profissional();
+				
+				g = new Genero();
+				g.setIdGenero(rs.getLong(6));
+				
+				r = new Raca();
+				r.setIdRaca(rs.getLong(7));
+				
+				pro.setIdProfissional(rs.getLong(1));
 				pro.setNomeProfissional(rs.getString(2));
 				pro.setDataNascimento(rs.getDate(3).toString());
-				pro.setGeneroProfissional(rs.getString(4));
-				pro.setRacaProfissional(rs.getString(5));
-				pro.setEspecialidadeProfissional(rs.getString(6));
-				pro.setEnderecoProfissional(rs.getString(7));
+				pro.setEspecialidadeProfissional(rs.getString(4));
+				pro.setEnderecoProfissional(rs.getString(5));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -41,12 +72,22 @@ public class ProfissionalDao {
 		
 		banco.closeConnection();
 		
+		g = daoGenero.getGeneroByID(g);
+		r = daoRaca.getRacaByID(r);
+		
+		pro.setGeneroProfissional(g);
+		pro.setRacaProfissional(r);
+		
 		return pro;
 	}
 	
 	public ArrayList<Profissional> getTodosProfissionais(){
-		ArrayList<Profissional> listaProfissional = new ArrayList<>();
 		String query = "SELECT * FROM Profissional";
+
+		ArrayList<Profissional> listaProfissional = new ArrayList<>();
+		ArrayList<Genero> listaGenero = new ArrayList<>();
+		ArrayList<Raca> listaRaca = new ArrayList<>();
+		
 		ResultSet rs;
 		
 		banco.setConnection();
@@ -56,21 +97,38 @@ public class ProfissionalDao {
 		try {
 			while(rs.next()) {
 				Profissional pro = new Profissional();
+				Genero g = new Genero();
+				Raca r = new Raca();
 				
+				g.setIdGenero(rs.getLong(6));
+				r.setIdRaca(rs.getLong(7));
+				
+				pro.setIdProfissional(rs.getLong(1));
 				pro.setNomeProfissional(rs.getString(2));
 				pro.setDataNascimento(rs.getDate(3).toString());
-				pro.setGeneroProfissional(rs.getString(4));
-				pro.setRacaProfissional(rs.getString(5));
-				pro.setEspecialidadeProfissional(rs.getString(6));
-				pro.setEnderecoProfissional(rs.getString(7));
+				pro.setEspecialidadeProfissional(rs.getString(4));
+				pro.setEnderecoProfissional(rs.getString(5));
 				
 				listaProfissional.add(pro);
+				listaGenero.add(g);
+				listaRaca.add(r);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
 		banco.closeConnection();
+		
+		for (int i = 0; i < listaRaca.size(); i++) {
+			Raca r = listaRaca.get(i);
+			r = daoRaca.getRacaByID(r);
+			
+			Genero g = listaGenero.get(i);
+			g = daoGenero.getGeneroByID(g);
+			
+			listaProfissional.get(i).setRacaProfissional(r);
+			listaProfissional.get(i).setGeneroProfissional(g);
+		}
 		
 		return listaProfissional;
 	}
@@ -79,17 +137,17 @@ public class ProfissionalDao {
 		long id = p.getIdProfissional();
 		String nome = p.getNomeProfissional();
 		String data = p.getDataNascimento();
-		String genero = p.getGeneroProfissional();
-		String raca = p.getRacaProfissional();
+		Genero genero = p.getGeneroProfissional();
+		Raca raca = p.getRacaProfissional();
 		String especialidade = p.getEspecialidadeProfissional();
 		String endereco = p.getEnderecoProfissional();
 		
 		String query = "UPDATE Profissional "
 					 + "SET nomeProfissional = '" + nome 
 					 + "', dataNascimento = '" + data
-					 + "', generoProfissional = '" + genero
-					 + "', racaProfissional = '" + raca
-					 + "', especialidadeProfissional = '" + especialidade
+					 + "', Genero_idGenero = " + genero.getIdGenero()
+					 + ", Raca_idRaca = " + raca.getIdRaca()
+					 + ", especialidadeProfissional = '" + especialidade
 					 + "', enderecoProfissional = '" + endereco
 					 + "' WHERE idProfissional = " + id + ";";
 		
@@ -100,6 +158,26 @@ public class ProfissionalDao {
 		banco.update(query);
 		
 		banco.closeConnection();
+	}
+	
+	public void deleteProfissionalTime(Profissional p) {
+		String query = "DELETE FROM Time_Profissional WHERE Profissional_idProfissional = "
+					 + p.getIdProfissional() + ";";
+		
+		banco.setConnection();
+		banco.delete(query);
+		banco.closeConnection();
+	}
+	
+	public void deleteProfissional(Profissional p) {
+		String query = "DELETE FROM Profissional WHERE idProfissional = " + p.getIdProfissional() + ";";
+		
+		deleteProfissionalTime(p);
+		
+		banco.setConnection();
+		banco.delete(query);
+		banco.closeConnection();
+		
 	}
 	
 }
