@@ -30,7 +30,7 @@ new Vue({
 
                             <tbody >
                                 <tr v-for="(item, index) in listaProfissionaisDoTime">
-                                    <td>{{ item }}</td>
+                                    <td>{{ item.nomeProfissional }}</td>
                                     <td>
                                         <button @click="removeProfissional(index)" :hidden="disable" class="btn btn-danger" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -49,8 +49,8 @@ new Vue({
 
                     <div class="col-5">
                         <label class="form-label">Profissional</label>
-                        <select @change="adicionarProfissional" class="form-select" v-model="profissionalSelecionado" id="listaDeTodosOsProfissionais" :disabled="disable" >
-                        <option v-for="profissional in listaDeTodosOsProfissionais" :value="profissional">{{ profissional }}</option>
+                        <select @change="adicionarProfissional" class="form-select" v-model="profissionalSelecionadoNome" id="listaDeTodosOsProfissionais" :disabled="disable" >
+                            <option v-for="profissional in listaDeTodosOsProfissionais">{{ profissional.nomeProfissional }}</option>
                         </select>
                     </div>
                 </div>
@@ -63,7 +63,8 @@ new Vue({
             idTime:'',
             nomeTime:'',
             listaProfissionaisDoTime:[],
-            listaDeTodosOsProfissionais:[ "Profissional 1", "Profissional 2", "Profissional 3"],
+            listaDeTodosOsProfissionais:[],
+            profissionalSelecionadoNome:'',
             profissionalSelecionado: '',
             disable: false
         }
@@ -71,11 +72,11 @@ new Vue({
     mounted:async function(){
         let tipo = window.location.pathname.split("/")[2]
         await this.getId();
-        if(tipo == 'visualizar')
+        if(tipo == 'visualizar' || tipo == 'remover')
             this.disable = true;
 
 
-        if( tipo == 'editar' || tipo == 'cadastrar')
+        if( tipo == 'editar' || tipo == 'adicionar')
             await this.getTodosProfissionais();
 
 
@@ -93,11 +94,12 @@ new Vue({
             this.excluirTime();
         });
     },
-    async getId(){
-        let id = window.location.pathname.split("/")[window.location.pathname.split("/").length-1]
-        this.idTime = id;
-    },
+
     methods:{
+        async getId(){
+            let id = window.location.pathname.split("/")[window.location.pathname.split("/").length-1]
+            this.idTime = id;
+        },
         async getInfo(){
             // Só para testes
 
@@ -109,18 +111,39 @@ new Vue({
             axios.get(url).then(async (response) => {
             let data = response.data;
             //self.idTime = data.id
-            self.nomeTime = data.nome
-            self.listaProfissionaisDoTime = data.profissionais
+            console.log(data)
+            self.nomeTime = data.nomeTime
+            for(let i = 0; i < data.listaProfissional.length;i++){
+                self.listaProfissionaisDoTime.push(data.listaProfissional[i])
+            }
+
             });
         },
 
         adicionarProfissional(){
-            if( !(this.listaProfissionaisDoTime.includes(this.profissionalSelecionado))){
-                this.listaProfissionaisDoTime.push(this.profissionalSelecionado)
+            // Se não pertence ao time, adiciona
+            if(!this.jaPertenceAoTime(this.profissionalSelecionadoNome)){
+                for(let i = 0; i < this.listaDeTodosOsProfissionais.length; i++ ){
+                    if(this.listaDeTodosOsProfissionais[i].nomeProfissional == this.profissionalSelecionadoNome){
+                        this.listaProfissionaisDoTime.push(this.listaDeTodosOsProfissionais[i])
+                    }
+                }
             }
+    
             else{
                 alert("Profissional já está no time!")
             }
+
+            console.log(this.listaProfissionaisDoTime)
+        },
+
+        jaPertenceAoTime(nome){
+            for(let i = 0; i < this.listaProfissionaisDoTime.length; i++){
+                if(this.listaProfissionaisDoTime[i].nomeProfissional == nome){
+                    return true;
+                }
+            }
+            return false;
         },
 
         removeProfissional(index){
@@ -137,7 +160,7 @@ new Vue({
             axios.get(url).then(async (response) => {
             let data = response.data;
                 for(let i = 0; i < data.length; i++){
-                    self.listaDeTodosOsProfissionais.push(data[i].nomeProfissional)
+                    self.listaDeTodosOsProfissionais.push(data[i])
                 }
             });
         },
@@ -163,20 +186,22 @@ new Vue({
 
         async enviarRequisicaoCriacaoEdicao(){
             let tipo = window.location.pathname.split("/")[2]
-            let corpoDaRequisicao = {};
-            if(tipo == 'editar'){
-                corpoDaRequisicao.idTime = this.idTime;
+            
+            let listaProfissional = [];
+            for(let i = 0 ;i < this.listaProfissionaisDoTime.length; i++){
+                listaProfissional.push(this.listaProfissionaisDoTime[i])
             }
 
-            corpoDaRequisicao.nomeTime = this.nomeTime;
-            corpoDaRequisicao.profissionais = this.listaProfissionaisDoTime;
+            let corpoDaRequisicao = {
+                nomeTime: this.nomeTime,
+                listaProfissional: listaProfissional,
+            }
 
             let url = ""
 
             if(tipo == 'editar'){
+                corpoDaRequisicao.idTime = this.idTime;
                 url = URL_BASE + URL_PUT_TIME
-                const corpoJSON = JSON.stringify(corpoDaRequisicao);
-                console.log(corpoJSON)
 
                 try {
                     const response = await axios.put(url, {corpoDaRequisicao});
@@ -186,10 +211,12 @@ new Vue({
 
             else if(tipo == "adicionar"){
                 url = URL_BASE + URL_POST_TIME
-                const corpoJSON = JSON.stringify(corpoDaRequisicao);
                 try {
-                    const response = await axios.post(url, {corpoJSON});
-                    if (response.status == 200){ alert("Salvo com sucesso!"); }
+                    const response = await axios.post(url, {corpoDaRequisicao});
+                    if (response.status == 200){ 
+                        alert("Criado com sucesso!");
+                        window.location.href = "/listarTimes" 
+                    }
                 } catch (error) {
                     alert('Erro ao salvar alterações: ' + error);
                   }
@@ -197,27 +224,29 @@ new Vue({
         },
 
         async excluirTime(){
-            const url = URL_BASE + URL_DELETE_TIME + "/" + this.idTime
+            const url = URL_BASE + URL_DELETE_TIME
 
-            axios.delete(url)
-            .then(response => {
-                alert(response);
-            })
-            .catch(error => {
-                if (error.response) {
-                  console.log(error.response.data);
-                  console.log(error.response.status);
-                  console.log(error.response.headers);
-                } 
+            let listaProfissional = [];
+            for(let i = 0 ;i < this.listaProfissionaisDoTime.length; i++){
+                listaProfissional.push(this.listaProfissionaisDoTime[i])
+            }
 
-                else if (error.request) {
-                  console.log(error.request);
-                } 
+            let corpoDaRequisicao = {
+                idTime: this.idTime,
+                nomeTime: this.nomeTime,
+                listaProfissional: listaProfissional,
+            }
 
-                else {
-                  console.log('Error', error.message);
+
+            try {
+                const response = await axios.delete(url, {  data: {
+                    source: corpoDaRequisicao
+                  }});
+                if (response.status == 200){ 
+                    alert("Removido com sucesso!"); 
+                    window.location.href = "/listarTimes"
                 }
-            });
+            } catch (error) { alert('Erro ao salvar alterações: ' + error); }
         }
     }
         

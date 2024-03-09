@@ -1,5 +1,5 @@
 import { EventBus } from '../../eventBus.js';
-import {URL_BASE, URL_GET_PROFISSIONAL, URL_PUT_PROFISSIONAL, URL_POST_PROFISSIONAL, URL_DELETE_PROFISSIONAL} from "../../constantes.js"
+import {URL_BASE, URL_GET_PROFISSIONAL, URL_PUT_PROFISSIONAL, URL_POST_PROFISSIONAL, URL_DELETE_PROFISSIONAL, URL_GET_LISTAR_GENEROS, URL_GET_LISTAR_RACAS} from "../../constantes.js"
 new Vue({
     el:'#formularioProfissional',
     template:
@@ -30,14 +30,10 @@ new Vue({
                     <div class="col-6">
                         <label class="form-label">Gênero</label>
                         <select class="form-select" v-model="generoProfissional" id="generoProfissional" :disabled="disable">
-                        <option v-for="genero in listaGeneros">{{genero}}</option>
+                        <option v-for="genero in listaGeneros">{{genero.nome}}</option>
                         </select>
                     </div>
 
-                    <div class="col-6" v-if="generoProfissional == 'Outro'">
-                        <label class="form-label">Especifique</label>
-                        <input type="text" class="form-control" v-model="generoProfissionalTexto" id="generoProfissionalTexto" placeholder="Especifique" :disabled="disable">
-                    </div>
 
                 </div>
 
@@ -45,14 +41,11 @@ new Vue({
                     <div class="col-6">
                         <label class="form-label">Raça</label>
                         <select class="form-select" v-model="racaProfissional" id="racaProfissional" :disabled="disable">
-                            <option v-for="raca in listaRacas">{{raca}}</option>
+                            <option v-for="raca in listaRacas">{{raca.nome}}</option>
                         </select>
                     </div>
 
-                    <div class="col-6" v-if="racaProfissional == 'Outro'">
-                        <label class="form-label">Especifique</label>
-                        <input type="text" class="form-control" v-model="racaProfissionalTexto" id="racaProfissionalTexto" placeholder="Especifique" :disabled="disable">
-                    </div>
+
 
                 </div>
 
@@ -66,7 +59,7 @@ new Vue({
 
                     <div class="col-6" v-if="especialidadeProfissional == 'Outro'">
                         <label class="form-label">Especifique</label>
-                        <input type="text" class="form-control" id="especialidadeProfissionalTexto" v-model="especialidadeProfissionalTexto" placeholder="Especifique">
+                        <input type="text" class="form-control" id="especialidadeProfissionalTexto" v-model="especialidadeProfissionalTexto" placeholder="Especifique" :disabled="disable">
                     </div>
                 </div>
             </div>
@@ -80,23 +73,30 @@ new Vue({
             enderecoProfissional:'',
             dataNascimentoProfissional:'',
             generoProfissional:'',
-            generoProfissionalTexto:'',
             racaProfissional:'',
-            racaProfissionalTexto:'',
             especialidadeProfissional:'',
             especialidadeProfissionalTexto:'',
+            idGenero:'',
+            idRaca:'',
             disable: false,
-            listaGeneros: ['Homem', 'Mulher','Não-binario','Outro', 'Não informar'],
-            listaRacas: ['Branca','Negra','Parda','Amarela','Indígena','Outro','Não informar'],
+            listaTime:'',
+            listaGeneros: [],
+            listaRacas: [],
             listaEspecialidades: ['Analista de Sistemas','Desenvolvedor','Administrador de banco de dados','Designer','Outro']
         }
     },
     mounted:async function(){
         let tipo = window.location.pathname.split("/")[2]
+        await this.getGeneros();
+        await this.getRacas();
+
+
         await this.getId();
 
-        if(tipo == 'visualizar')
+        if(tipo == 'visualizar' || tipo == 'remover'){
             this.disable = true;
+        }
+            
 
         if( tipo != 'adicionar')
             await this.getInfo();
@@ -114,6 +114,36 @@ new Vue({
         });
     },
     methods:{
+        async getGeneros(){
+            let url = URL_BASE + URL_GET_LISTAR_GENEROS
+            let self = this;
+            axios.get(url).then(async (response) => {
+                let data = response.data;
+                for(let i = 0; i < data.length; i++){
+                    let obj = {
+                        id:data[i].idGenero,
+                        nome:data[i].nomeGenero
+                    }
+                    self.listaGeneros.push(obj)
+                }
+            });
+        },
+        async getRacas(){
+            let url =   URL_BASE + URL_GET_LISTAR_RACAS
+            let self = this;
+            axios.get(url).then(async (response) => {
+                let data = response.data;
+                for(let i = 0; i < data.length; i++){
+                    let obj = {
+                        id:data[i].idRaca,
+                        nome:data[i].nomeRaca
+                    }
+                    self.listaRacas.push(obj)
+                }
+            });
+
+        },
+
         async getId(){
             let id = window.location.pathname.split("/")[window.location.pathname.split("/").length-1]
             this.idProfissional = id;
@@ -130,30 +160,40 @@ new Vue({
 
         axios.get(url).then(async (response) => {
             let data = response.data;
+
+            console.log(data)
             //self.idProfissional = data.idProfissional
             self.nomeProfissional = data.nomeProfissional
             self.enderecoProfissional = data.enderecoProfissional
             self.dataNascimentoProfissional = data.dataNascimento
-
+            self.listaTime = data.listaTime
             // Tratar esses campos
-            let genero = data.generoProfissional;
-            if (this.listaGeneros.includes(genero)){
+            let genero = data.generoProfissional.nomeGenero;
+            self.idGenero = data.generoProfissional.idGenero
+            self.generoProfissional = genero
+
+            /*if (this.listaGeneros.includes(genero)){
                 self.generoProfissional = genero
+                self.generoProfissionalTexto = genero
             }
 
             else{
                 self.generoProfissional = "Outro"
                 self.generoProfissionalTexto = genero
-            }
+            }*/
 
-            let raca = data.racaProfissional;
-            if (this.listaRacas.includes(raca)){
+            let raca = data.racaProfissional.nomeRaca;
+            self.idRaca = data.racaProfissional.idRaca
+            self.racaProfissional = raca
+
+            /*if (this.listaRacas.includes(raca)){
                 self.racaProfissional = raca
+                
             }
             else{
                 self.racaProfissional = "Outro"
                 self.racaProfissionalTexto = raca
-            }
+            }*/
 
             let especialidade = data.especialidadeProfissional;
             if (this.listaEspecialidades.includes(especialidade)){
@@ -189,13 +229,6 @@ new Vue({
                 valido = false;
             }
 
-            if (this.generoProfissional == "Outro"){
-                if(!this.generoProfissionalTexto || this.generoProfissionalTexto.trim() == ""){
-                    $("#generoProfissionalTexto").addClass("invalido");
-                    valido = false;
-                }
-            }
-
             if (!this.racaProfissional || this.racaProfissional.trim() == ""){
                 $("#racaProfissional").addClass("invalido");
                 valido = false;
@@ -213,12 +246,6 @@ new Vue({
                 }
             }
 
-            if (this.racaProfissional == "Outro"){
-                if(!this.racaProfissionalTexto  || this.racaProfissionalTexto.trim() == ""){
-                    $("#racaProfissionalTexto").addClass("invalido");
-                    valido = false;
-                }
-            }
 
             if(valido){
                 return true;
@@ -229,26 +256,53 @@ new Vue({
 
         async enviarRequisicaoCriacaoEdicao(){
             let tipo = window.location.pathname.split("/")[2]
-            let corpoDaRequisicao = {};
+            let p = 0;
+            for(let i = 0; i < this.listaGeneros.length; i++){
+                if(this.listaGeneros[p].nome == this.generoProfissional)
+                    break;
+                else{
+                    p +=1
+                }
+            }
+
+            let idGenero = this.listaGeneros[p].id
+
+            p = 0;
+            for(let i = 0; i < this.listaRacas.length; i++){
+                if(this.listaRacas[p].nome == this.racaProfissional)
+                    break;
+                else{
+                    p +=1
+                }
+            }
+
+            let idRaca = this.listaRacas[p].id
+
+            let corpoDaRequisicao = {
+                nomeProfissional: this.nomeProfissional,
+                dataNascimento: this.dataNascimentoProfissional,
+                enderecoProfissional: this.enderecoProfissional,
+                generoProfissional:{
+                    idGenero: idGenero,
+                    nomeGenero: this.generoProfissional
+                },
+                racaProfissional:{
+                    idRaca:idRaca,
+                    nomeRaca:this.racaProfissional
+                },
+                especialidadeProfissional: this.especialidadeProfissional == "Outro" ? this.especialidadeProfissionalTexto.trim() : this.especialidadeProfissional,
+                listaTimes: null
+            };  
+
             if(tipo == 'editar'){
                 corpoDaRequisicao.idProfissional = this.idProfissional;
-                console.log(this.idProfissional)
             }
                 
-
-            corpoDaRequisicao.nomeProfissional = this.nomeProfissional;
-            corpoDaRequisicao.enderecoProfissional = this.enderecoProfissional;
-            corpoDaRequisicao.dataNascimento = this.dataNascimentoProfissional;
-            corpoDaRequisicao.generoProfissional = this.generoProfissional == "Outro" ? this.generoProfissionalTexto.trim() : this.generoProfissional,
-            corpoDaRequisicao.racaProfissional = this.racaProfissional == "Outro" ? this.racaProfissionalTexto.trim() : this.racaProfissional,
-            corpoDaRequisicao.especialidadeProfissional =  this.especialidadeProfissional == "Outro" ? this.especialidadeProfissionalTexto.trim() : this.especialidadeProfissional
 
             let url = ""
 
             if(tipo == 'editar'){
                 url = URL_BASE + URL_PUT_PROFISSIONAL
-                const corpoJSON = JSON.stringify(corpoDaRequisicao);
-                console.log(corpoJSON)
 
                 try {
                     const response = await axios.put(url, {corpoDaRequisicao});
@@ -259,10 +313,12 @@ new Vue({
                 
             else if(tipo == "adicionar"){
                 url = URL_BASE + URL_POST_PROFISSIONAL
-                const corpoJSON = JSON.stringify(corpoDaRequisicao);
                 try {
-                    const response = await axios.post(url, {corpoJSON});
-                    if (response.status == 200){ alert("Salvo com sucesso!"); }
+                    const response = await axios.post(url, {corpoDaRequisicao});
+                    if (response.status == 200){
+                         alert("Criado com sucesso!");
+                         window.location.href = "/listarProfissionais"
+                 }
                 } catch (error) {
                     alert('Erro ao salvar alterações: ' + error);
                   }
@@ -270,29 +326,58 @@ new Vue({
         },
 
         async excluirProfissional(){
-
-
-            const url = URL_BASE + URL_DELETE_PROFISSIONAL + "/" + this.idProfissional;
-
-            axios.delete(url)
-            .then(response => {
-                alert(response);
-            })
-            .catch(error => {
-                if (error.response) {
-                  console.log(error.response.data);
-                  console.log(error.response.status);
-                  console.log(error.response.headers);
-                } 
-
-                else if (error.request) {
-                  console.log(error.request);
-                } 
-
-                else {
-                  console.log('Error', error.message);
+            const url = URL_BASE + URL_DELETE_PROFISSIONAL
+            let p = 0;
+            for(let i = 0; i < this.listaGeneros.length; i++){
+                if(this.listaGeneros[p].nome == this.generoProfissional)
+                    break;
+                else{
+                    p +=1
                 }
-            });
+            }
+
+            let idGenero = this.listaGeneros[p].id
+
+            p = 0;
+            for(let i = 0; i < this.listaRacas.length; i++){
+                if(this.listaRacas[p].nome == this.racaProfissional)
+                    break;
+                else{
+                    p +=1
+                }
+            }
+
+            let idRaca = this.listaRacas[p].id
+
+            let corpoDaRequisicao = {
+                idProfissional: this.idProfissional,
+                nomeProfissional: this.nomeProfissional,
+                dataNascimento: this.dataNascimentoProfissional,
+                enderecoProfissional: this.enderecoProfissional,
+                generoProfissional:{
+                    idGenero: idGenero,
+                    nomeGenero: this.generoProfissional
+                },
+                racaProfissional:{
+                    idRaca:idRaca,
+                    nomeRaca:this.racaProfissional
+                },
+                especialidadeProfissional: this.especialidadeProfissional == "Outro" ? this.especialidadeProfissionalTexto.trim() : this.especialidadeProfissional,
+                listaTimes: null
+            };  
+
+            try {
+                const response = await axios.delete(url, {  data: {
+                    source: corpoDaRequisicao
+                  }});
+                if (response.status == 200){ 
+                    alert("Removido com sucesso!"); 
+                    window.location.href = "/listarProfissionais"
+                }
+            } catch (error) { alert('Erro ao salvar alterações: ' + error); }
+
+
+
         }
     }
         
