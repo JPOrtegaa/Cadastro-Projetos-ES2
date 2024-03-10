@@ -91,6 +91,32 @@ app.get('/projeto/listar', async(req, res) => {
       });
 });
 
+app.get('/projeto/listar', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_PROJETOS
+    axios.get(url).then(async (response) => {
+        res.send(response.data);
+      });
+});
+
+
+app.get('/genero/listar', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_GENEROS
+    axios.get(url).then(async (response) => {
+        res.send(response.data);
+      });
+});
+
+app.get('/raca/listar', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_RACAS
+    axios.get(url).then(async (response) => {
+        res.send(response.data);
+      });
+});
+
+
+
+
+
 
 // GETS
 app.get('/profissional/:id', async(req, res) => {
@@ -120,11 +146,11 @@ app.get('/projeto/:id', async(req, res) => {
 
 
 // PUTS
-
 app.put('/profissional/atualizar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_PUT_PROFISSIONAL;
     let jsonBody = req.body.corpoDaRequisicao;
-    
+    console.log(jsonBody)
+
     try {
         const response = await axios.put(url, jsonBody);
         res.send(response.data);
@@ -136,6 +162,8 @@ app.put('/profissional/atualizar', async(req, res) => {
 app.put('/time/atualizar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_PUT_TIME;
     let jsonBody = req.body.corpoDaRequisicao;
+
+    console.log(jsonBody)
     
     try {
         const response = await axios.put(url, jsonBody);
@@ -158,31 +186,81 @@ app.put('/projeto/atualizar', async(req, res) => {
 });
 
 
+// POSTS
+app.post('/profissional/inserir', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_POST_PROFISSIONAL;
+    console.log(req.body)
+    let jsonBody = req.body.corpoDaRequisicao;
+    console.log(jsonBody)
+    try {
+        const response = await axios.post(url, jsonBody);
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+app.post('/time/inserir', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_POST_TIME;
+    let jsonBody = req.body.corpoDaRequisicao;
+    console.log(jsonBody)
+    try {
+        const response = await axios.post(url, jsonBody);
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+app.post('/projeto/inserir', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_POST_PROJETO;
+    let jsonBody = req.body.corpoDaRequisicao;
+    console.log(jsonBody)
+    try {
+        const response = await axios.post(url, jsonBody);
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+
 
 // DELETES
-app.delete('/profissional/:id', async(req, res) => {
-    const id = req.params.id;
-    let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_PROFISSIONAL + "/" + id
-    console.log(url)
-    axios.delete(url).then(async (response) => {
+app.delete('/profissional/deletar', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_PROFISSIONAL
+    let jsonBody = req.body.source;
+
+    try {
+        const response = await axios.delete(url, { data: jsonBody});
         res.send(response.data);
-      });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 });
 
-app.delete('/time/:id', async(req, res) => {
-    const id = req.params.id;
-    let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_TIME + "/" + id
-    axios.delete(url).then(async (response) => {
+app.delete('/time/deletar', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_TIME 
+    let jsonBody = req.body.source;
+
+    try {
+        const response = await axios.delete(url, { data: jsonBody});
         res.send(response.data);
-      });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 });
 
-app.delete('/projeto/:id', async(req, res) => {
-    const id = req.params.id;
-    let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_PROJETO + "/" + id
-    axios.delete(url).then(async (response) => {
+app.delete('/projeto/deletar', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_PROJETO
+    let jsonBody = req.body.corpoDaRequisicao;
+
+    try {
+        const response = await axios.delete(url, jsonBody);
         res.send(response.data);
-      });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 });
 
 
@@ -203,19 +281,23 @@ let URL_BASE_BACKEND = "http://localhost:8080";
 let URL_BACKEND_GET_PROFISSIONAL = "/profissional"
 let URL_BACKEND_GET_LISTAR_PROFISSIONAIS = "/profissional/listar"
 let URL_BACKEND_PUT_PROFISSIONAL = "/profissional/atualizar"
-let URL_BACKEND_DELETE_PROFISSIONAL = "/"
-let URL_BACKEND_POST_PROFISSIONAL = "/"
+let URL_BACKEND_DELETE_PROFISSIONAL = "/profissional/deletar"
+let URL_BACKEND_POST_PROFISSIONAL = "/profissional/inserir"
+
+
+let URL_BACKEND_GET_LISTAR_RACAS = "/raca/listar"
+let URL_BACKEND_GET_LISTAR_GENEROS = "/genero/listar"
 
 // Times
 let URL_BACKEND_GET_TIME = "/time"
 let URL_BACKEND_GET_LISTAR_TIMES = "/time/listar"
 let URL_BACKEND_PUT_TIME = "/time/atualizar"
-let URL_BACKEND_DELETE_TIME = "/"
-let URL_BACKEND_POST_TIME = "/"
+let URL_BACKEND_DELETE_TIME = "/time/deletar"
+let URL_BACKEND_POST_TIME = "/time/inserir"
 
 // Projetos
 let URL_BACKEND_GET_PROJETO = "/projeto"
 let URL_BACKEND_GET_LISTAR_PROJETOS = "/projeto/listar"
 let URL_BACKEND_PUT_PROJETO = "/projeto/atualizar"
-let URL_BACKEND_DELETE_PROJETO = "/"
-let URL_BACKEND_POST_PROJETO = "/"
+let URL_BACKEND_DELETE_PROJETO = "/projeto/deletar"
+let URL_BACKEND_POST_PROJETO = "/projeto/inserir"
