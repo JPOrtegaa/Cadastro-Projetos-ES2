@@ -7,7 +7,13 @@ public class Time {
 	private long idTime;
 	private String nomeTime;
 	private ArrayList<Profissional> listaProfissional;
-	
+	/*
+	public Time() {
+		idTime = -1;
+		nomeTime = null;
+		listaProfissional = null;
+	}
+	*/
 	public long getIdTime() {
 		return idTime;
 	}
