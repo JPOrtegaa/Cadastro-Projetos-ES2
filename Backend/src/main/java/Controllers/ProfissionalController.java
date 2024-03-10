@@ -30,14 +30,6 @@ public class ProfissionalController {
 		
 	}
 	
-	@PostMapping("/profissional/inserir")
-	public void inserirProfissional(@RequestBody Profissional p) {
-		
-		servicos.inserirProfissional(p);
-		
-		
-	}
-	
 	@GetMapping("/profissional/{id}")
 	public Profissional obterProfissionalByID(@PathVariable long id) {
 		Profissional p = new Profissional();

@@ -14,9 +14,7 @@ public class ProfissionalServicos {
 	}
 	
 	public void inserirProfissional(Profissional p) {
-		
 		daoProfissional.postProfissional(p);
-		
 	}
 	
 	public Profissional obterProfissionalByID(Profissional p) {
@@ -32,9 +30,7 @@ public class ProfissionalServicos {
 	
 	
 	public void atualizarProfissional(Profissional p) {
-		
 		daoProfissional.putProfissional(p);
-		
 	}
 	
 	public void deletarProfissional(Profissional p) {

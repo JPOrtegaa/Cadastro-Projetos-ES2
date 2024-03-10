@@ -20,9 +20,7 @@ public class RacaController {
 	
 	@GetMapping("/raca/listar")
 	public ArrayList<Raca> obterListaRacas(){
-		
 		return servicos.obterListaRacas();
-		
 	}
 	
 	@GetMapping("/raca/{id}")

@@ -120,7 +120,8 @@ public class TimeDao {
 		
 		banco.closeConnection();
 		
-		getTimeProfissional(timePesquisado);
+		if(timePesquisado != null)
+			getTimeProfissional(timePesquisado);
 		
 		return timePesquisado;
 	}
@@ -228,7 +229,8 @@ public class TimeDao {
 	}
 	
 	public void putTime(Time t) {
-		String query = "UPDATE Time SET nomeTime = '" + t.getNomeTime() + "';";
+		String query = "UPDATE Time SET nomeTime = '" + t.getNomeTime() + "'"
+					 + " WHERE idTime = " + t.getIdTime() + ";";
 		
 		banco.setConnection();
 		banco.update(query);

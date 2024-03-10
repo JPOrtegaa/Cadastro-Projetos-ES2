@@ -65,8 +65,10 @@ public class ProjetoDao {
 		
 		banco.closeConnection();
 		
-		t = daoTime.getTimeByID(t);
-		projeto.setTime(t);
+		if(t != null) {			
+			t = daoTime.getTimeByID(t);
+			projeto.setTime(t);
+		}
 		
 		return projeto;
 	}
@@ -128,6 +130,5 @@ public class ProjetoDao {
 		banco.delete(query);
 		banco.closeConnection();
 	}
-	
 	
 }

@@ -20,8 +20,6 @@ public class GeneroController {
 	
 	@GetMapping("/genero/listar")
 	public ArrayList<Genero> obterListaGeneros(){
-		
-		
 		return servicos.obterListaGeneros();
 	}
 	

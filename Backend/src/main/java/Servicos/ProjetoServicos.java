@@ -14,36 +14,23 @@ public class ProjetoServicos {
 	}
 	
 	public void inserirProjeto(Projeto p) {
-		
 		daoProjeto.postProjeto(p);
-		
-		
-		
 	}
 	
 	public Projeto obterProjetoByID(Projeto p) {
-		
 		return daoProjeto.getProjetoByID(p);
-		
 	}
 	
 	public ArrayList<Projeto> obterListaProjetos(){
-		
 		return daoProjeto.getListaProjetos();
-		
 	}
 	
 	public void atualizarProjeto(Projeto p) {
-		
 		daoProjeto.putProjeto(p);
-		
 	}
 	
 	public void deletarProjeto(Projeto p) {
-		
 		daoProjeto.deleteProjeto(p);
-		
 	}
-	
 	
 }

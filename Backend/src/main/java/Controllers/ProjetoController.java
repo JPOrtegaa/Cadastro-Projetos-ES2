@@ -24,10 +24,7 @@ public class ProjetoController {
 	
 	@PostMapping("/projeto/inserir")
 	public void inserirProjeto(@RequestBody Projeto p) {
-		
 		servicos.inserirProjeto(p);
-		
-		
 	}
 	
 	
@@ -41,27 +38,17 @@ public class ProjetoController {
 	
 	@GetMapping("/projeto/listar")
 	public ArrayList<Projeto> obterListaProjetos(){
-		
-		
 		return servicos.obterListaProjetos();
 	}
 	
 	@PutMapping("/projeto/atualizar")
 	public void atualizarProjeto(@RequestBody Projeto p) {
-		
 		servicos.atualizarProjeto(p);
-		
-		
 	}
 	
 	@DeleteMapping("/projeto/deletar")
 	public void deletarProjeto(@RequestBody Projeto p) {
-		
 		servicos.deletarProjeto(p);
-		
 	}
-	
-	
-	
 	
 }

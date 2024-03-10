@@ -72,11 +72,12 @@ public class ProfissionalDao {
 		
 		banco.closeConnection();
 		
-		g = daoGenero.getGeneroByID(g);
-		r = daoRaca.getRacaByID(r);
-		
-		pro.setGeneroProfissional(g);
-		pro.setRacaProfissional(r);
+		if(pro != null) {
+			g = daoGenero.getGeneroByID(g);
+			r = daoRaca.getRacaByID(r);
+			pro.setGeneroProfissional(g);
+			pro.setRacaProfissional(r);
+		}
 		
 		return pro;
 	}
@@ -150,8 +151,6 @@ public class ProfissionalDao {
 					 + ", especialidadeProfissional = '" + especialidade
 					 + "', enderecoProfissional = '" + endereco
 					 + "' WHERE idProfissional = " + id + ";";
-		
-		System.out.println(query);
 		
 		banco.setConnection();
 		
