@@ -49,16 +49,12 @@ public class TimeController {
 	
 	@PutMapping("/time/atualizar")
 	void atualizarTime(@RequestBody Time t) {
-		
 		servicos.atualizarTime(t);
-		
 	}
 	
 	@DeleteMapping("/time/deletar")
 	void deletarTime(@RequestBody Time t) {
-		
 		servicos.deletarTime(t);
-		
 	}
 	
 }

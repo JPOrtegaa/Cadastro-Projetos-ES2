@@ -24,10 +24,7 @@ public class ProfissionalController {
 	
 	@PostMapping("/profissional/inserir")
 	public void inserirProfissional(@RequestBody Profissional p) {
-		
 		servicos.inserirProfissional(p);
-		
-		
 	}
 	
 	@GetMapping("/profissional/{id}")
@@ -47,24 +44,14 @@ public class ProfissionalController {
 		return null;
 	}
 	
-	
 	@PutMapping("/profissional/atualizar")
 	public void atualizarProfissional(@RequestBody Profissional p) {
-		
 		servicos.atualizarProfissional(p);
-		
 	}
-	
 	
 	@DeleteMapping("/profissional/deletar")
 	public void deletarProfissional(@RequestBody Profissional p) {
-		
 		servicos.deletarProfissional(p);
-		
 	}
-	
-	
-	
-	
 	
 }
