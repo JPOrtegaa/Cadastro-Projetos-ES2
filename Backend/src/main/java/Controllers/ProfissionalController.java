@@ -22,9 +22,12 @@ public class ProfissionalController {
 		this.servicos = new ProfissionalServicos();
 	}
 	
-	@GetMapping("/teste")
-	public String teste() {
-		return "Salve!";
+	@PostMapping("/profissional/inserir")
+	public void inserirProfissional(@RequestBody Profissional p) {
+		
+		servicos.inserirProfissional(p);
+		
+		
 	}
 	
 	@PostMapping("/profissional/inserir")

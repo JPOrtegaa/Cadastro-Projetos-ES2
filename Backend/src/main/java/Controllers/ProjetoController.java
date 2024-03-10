@@ -1,7 +1,13 @@
 package Controllers;
 
+import java.util.ArrayList;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import Entidades.Projeto;
@@ -17,9 +23,9 @@ public class ProjetoController {
 	}
 	
 	@PostMapping("/projeto/inserir")
-	public void inserirProjeto(@PathVariable Projeto p) {
+	public void inserirProjeto(@RequestBody Projeto p) {
 		
-		
+		servicos.inserirProjeto(p);
 		
 		
 	}
@@ -27,7 +33,31 @@ public class ProjetoController {
 	
 	@GetMapping("/projeto/{id}")
 	public Projeto obterProjetoByID(@PathVariable long id) {
+		Projeto p = new Projeto();
+		p.setIdProjeto(id);
 		
+		return servicos.obterProjetoByID(p);
+	}
+	
+	@GetMapping("/projeto/listar")
+	public ArrayList<Projeto> obterListaProjetos(){
+		
+		
+		return servicos.obterListaProjetos();
+	}
+	
+	@PutMapping("/projeto/atualizar")
+	public void atualizarProjeto(@RequestBody Projeto p) {
+		
+		servicos.atualizarProjeto(p);
+		
+		
+	}
+	
+	@DeleteMapping("/projeto/deletar")
+	public void deletarProjeto(@RequestBody Projeto p) {
+		
+		servicos.deletarProjeto(p);
 		
 	}
 	

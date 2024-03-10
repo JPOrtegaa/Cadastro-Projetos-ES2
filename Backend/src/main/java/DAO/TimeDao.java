@@ -12,9 +12,10 @@ public class TimeDao {
 	
 	private BancoSQL banco;
 	private ProfissionalDao daoProfissional;
+	private long idTimeBase = 8;
 	
 	public TimeDao() {
-		banco = new BancoSQL("root", "jp17", "es2-projeto1");
+		banco = new BancoSQL("root", "jp17", "es2-projeto1-final");
 		daoProfissional = new ProfissionalDao();
 	}
 	
@@ -39,10 +40,11 @@ public class TimeDao {
 		banco.insert(query);
 		banco.closeConnection();
 		
-		novo = getTimeByNome(t);
-		novo.setListaProfissional(t.getListaProfissional());
-		
-		postTimeProfissional(novo);
+		if(t.getListaProfissional() != null) {
+			novo = getTimeByNome(t);
+			novo.setListaProfissional(t.getListaProfissional());
+			postTimeProfissional(novo);			
+		}
 	}
 	
 	public Time getTimeByNome(Time t) {
@@ -165,6 +167,30 @@ public class TimeDao {
 		banco.closeConnection();
 	}
 	
+	public void deleteTimeProjeto(Time t) throws SQLException {
+		String query = "SELECT * FROM Projeto WHERE Time_idTime = " + t.getIdTime() + ";";
+		ArrayList<Long> listaIdProjeto = new ArrayList<>();
+		ResultSet rs;
+		
+		banco.setConnection();
+		rs = banco.select(query);
+		
+		while(rs.next()) {
+			listaIdProjeto.add(rs.getLong(1));
+		}
+		
+		while(!listaIdProjeto.isEmpty()) {
+			long idProjeto = listaIdProjeto.remove(0);
+			query = "UPDATE Projeto SET Time_idTime = " + this.idTimeBase
+				  + " WHERE idProjeto = " + idProjeto + ";";
+			System.out.println("Query:");
+			System.out.println(query);
+			banco.update(query);
+		}
+		
+		banco.closeConnection();
+	}
+	
 	public void putTimeProfissional(Time t) {
 		Time velho = new Time();
 		velho.setIdTime(t.getIdTime());
@@ -216,8 +242,15 @@ public class TimeDao {
 					 + "WHERE idTime =  " + t.getIdTime() + ";";
 		
 		// Deletar em profissional
-		deleteTimeProfissional(t);
-		// Ainda falta deletar em Projeto, fazer amanha!!
+		if(t.getListaProfissional() != null)
+			deleteTimeProfissional(t);
+		
+		// Deletar em projeto
+		try {
+			deleteTimeProjeto(t);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 		banco.setConnection();
 		

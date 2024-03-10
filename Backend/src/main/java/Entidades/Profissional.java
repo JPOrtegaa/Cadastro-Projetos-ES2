@@ -7,11 +7,8 @@ public class Profissional {
 	private long idProfissional;
 	private String nomeProfissional;
 	private String dataNascimento;
-	//private String generoProfissional;
-	//private String racaProfissional;
 	
 	private Genero generoProfissional;
-	
 	private Raca racaProfissional;
 	
 	private String especialidadeProfissional;
@@ -63,24 +60,6 @@ public class Profissional {
 	}
 
 	public void setRacaProfissional(Raca racaProfissional) {
-		this.racaProfissional = racaProfissional;
-	}
-	
-	
-	/*
-	public String getGeneroProfissional() {
-		return generoProfissional;
-	}
-	
-	public void setGeneroProfissional(String generoProfissional) {
-		this.generoProfissional = generoProfissional;
-	}
-	
-	public String getRacaProfissional() {
-		return racaProfissional;
-	}
-	
-	public void setRacaProfissional(String racaProfissional) {
 		this.racaProfissional = racaProfissional;
 	}
 	*/

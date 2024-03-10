@@ -25,6 +25,9 @@ public class TimeController {
 	@PostMapping("/time/inserir")
 	public void inserirTime(@RequestBody Time t) {
 		
+		if(t.getListaProfissional() == null)
+			System.out.println("Lista NULL!!!");
+		
 		servicos.inserirTime(t);
 			
 	}
