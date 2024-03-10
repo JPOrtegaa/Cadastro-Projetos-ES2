@@ -176,7 +176,8 @@ app.put('/time/atualizar', async(req, res) => {
 app.put('/projeto/atualizar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_PUT_PROJETO;
     let jsonBody = req.body.corpoDaRequisicao;
-    
+    console.log(jsonBody)
+
     try {
         const response = await axios.put(url, jsonBody);
         res.send(response.data);
@@ -253,17 +254,15 @@ app.delete('/time/deletar', async(req, res) => {
 
 app.delete('/projeto/deletar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_PROJETO
-    let jsonBody = req.body.corpoDaRequisicao;
+    let jsonBody = req.body.source;
 
     try {
-        const response = await axios.delete(url, jsonBody);
+        const response = await axios.delete(url, { data: jsonBody});
         res.send(response.data);
     } catch (error) {
         res.status(500).send(error.message);
     }
 });
-
-
 
 
 

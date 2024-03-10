@@ -49,7 +49,7 @@ new Vue({
                 <div class="mb-3 col-7">
                     <label class="form-label">Time responsável</label>
                     <select class="form-select" v-model="timeResponsavel" id="timeResponsavel" :disabled="disable" >
-                        <option v-for="responsavel in listaTimeResponsavel">{{ responsavel }}</option>
+                        <option v-for="responsavel in listaTimeResponsavel">{{ responsavel.nomeTime }}</option>
                     </select>
                 </div>
             </div>
@@ -72,14 +72,15 @@ new Vue({
     },
     mounted:async function(){
         await this.getId();
+        await this.getTimes();
         let tipo = window.location.pathname.split("/")[2]
         if(tipo == 'visualizar')
             this.disable = true;
 
-        if( tipo != 'adicionar')
-            await this.getTimes();
+        if( tipo != 'adicionar'){
+            
             await this.getInfo();
-
+        }
 
         EventBus.$on('confirmarCriacaoEdicao',() => {
             if(this.validarCampos()){
@@ -103,7 +104,7 @@ new Vue({
             axios.get(url).then(async (response) => {
                 let data = response.data;
                 for(let i = 0; i < data.length; i++){
-                    self.listaTimeResponsavel.push(data[i].nomeTime)
+                    self.listaTimeResponsavel.push(data[i])
                 }
             });
 
@@ -119,14 +120,15 @@ new Vue({
 
             axios.get(url).then(async (response) => {
                 let data = response.data;
+                console.log(data)
                 //self.idProjeto = data.idProjeto;
                 self.nomeProjeto = data.nomeProjeto;
                 self.nomeCliente = data.nomeCliente;
-                self.objetivo = data.objetivo;
+                self.objetivo = data.objetivoProjeto;
                 self.dataInicio = data.dataInicio;
-                self.dataFim = data.dataFim;
-                self.valor = data.valor;
-                self.timeResponsavel = data.timeResponsavel
+                self.dataFim = data.dataTermino;
+                self.valor = data.valorProjeto;
+                self.timeResponsavel = data.time.nomeTime
             });
         },
 
@@ -153,7 +155,7 @@ new Vue({
                 $("#dataFim").addClass("invalido");
                 valido = false;
             }
-            if (!this.valor || this.valor.trim() ==  ""){
+            if (!this.valor || this.valor ==  ""){
                 $("#valor").addClass("invalido");
                 valido = false;
             }
@@ -178,26 +180,34 @@ new Vue({
 
         async enviarRequisicaoCriacaoEdicao(){
             let tipo = window.location.pathname.split("/")[2]
-            let corpoDaRequisicao = {};
-            if(tipo == 'editar'){
-                corpoDaRequisicao.idProjeto = this.idProjeto;
+            let corpoDaRequisicao = {
+                nomeProjeto: this.nomeProjeto,
+                nomeCliente: this.nomeCliente,
+                objetivoProjeto: this.objetivo,
+                dataInicio: this.dataInicio,
+                dataTermino: this.dataFim,
+                valorProjeto:  this.valor
+            };
+
+            let time;
+            let p = 0;
+            for(let i = 0; i < this.listaTimeResponsavel.length; i++){
+                if(this.timeResponsavel == this.listaTimeResponsavel[i].nomeTime){
+                    break;
+                }
+                p += 1;
             }
 
+            time = this.listaTimeResponsavel[p]
 
-            corpoDaRequisicao.nomeProjeto = this.nome;
-            corpoDaRequisicao.nomeCliente = this.nomeCliente;
-            corpoDaRequisicao.objetivo = this.objetivo;
-            corpoDaRequisicao.dataInicio = this.dataInicio
-            corpoDaRequisicao.dataFim = this.dataFim
-            corpoDaRequisicao.valor =  this.valor 
-            corpoDaRequisicao.timeResponsavel =  this.timeResponsavel 
+            corpoDaRequisicao.time = time;
+
 
             let url = ""
 
             if(tipo == 'editar'){
                 url = URL_BASE + URL_PUT_PROJETO
-                const corpoJSON = JSON.stringify(corpoDaRequisicao);
-                console.log(corpoJSON)
+                corpoDaRequisicao.idProjeto = this.idProjeto;
 
                 try {
                     const response = await axios.put(url, {corpoDaRequisicao});
@@ -207,10 +217,12 @@ new Vue({
 
             else if(tipo == "adicionar"){
                 url = URL_BASE + URL_POST_PROJETO
-                const corpoJSON = JSON.stringify(corpoDaRequisicao);
                 try {
-                    const response = await axios.post(url, {corpoJSON});
-                    if (response.status == 200){ alert("Salvo com sucesso!"); }
+                    const response = await axios.post(url, {corpoDaRequisicao});
+                    if (response.status == 200){ 
+                        alert("Criado com sucesso!");
+                         window.location.href = "/listarProjetos"
+                    }
                 } catch (error) {
                     alert('Erro ao salvar alterações: ' + error);
                   }
@@ -218,27 +230,43 @@ new Vue({
         },
 
         async excluirProjeto(){
-            const url = URL_BASE + URL_DELETE_PROJETO + "/" + this.idProjeto
+            const url = URL_BASE + URL_DELETE_PROJETO 
 
-            axios.delete(url)
-            .then(response => {
-                alert(response);
-            })
-            .catch(error => {
-                if (error.response) {
-                  console.log(error.response.data);
-                  console.log(error.response.status);
-                  console.log(error.response.headers);
-                } 
+            let corpoDaRequisicao = {
+                idProjeto: this.idProjeto,
+                nomeProjeto: this.nomeProjeto,
+                nomeCliente: this.nomeCliente,
+                objetivoProjeto: this.objetivo,
+                dataInicio: this.dataInicio,
+                dataTermino: this.dataFim,
+                valorProjeto:  this.valor
+            };
 
-                else if (error.request) {
-                  console.log(error.request);
-                } 
-
-                else {
-                  console.log('Error', error.message);
+            let time;
+            let p = 0;
+            for(let i = 0; i < this.listaTimeResponsavel.length; i++){
+                if(this.timeResponsavel == this.listaTimeResponsavel[i].nomeTime){
+                    break;
                 }
-            });
+                p += 1;
+            }
+
+            time = this.listaTimeResponsavel[p]
+
+            corpoDaRequisicao.time = time;
+
+
+            try {
+                const response = await axios.delete(url, {  data: {
+                    source: corpoDaRequisicao
+                  }});
+                if (response.status == 200){ 
+                    alert("Removido com sucesso!"); 
+                    window.location.href = "/listarProjetos"
+                }
+            } catch (error) { alert('Erro ao salvar alterações: ' + error); }
+
+
         }
     }
         
