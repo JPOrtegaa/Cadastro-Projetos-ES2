@@ -30,22 +30,15 @@ public class TimeServicos {
 	}
 	
 	public ArrayList<Time> obterListaTimes(){
-		// fazer verificacao, if empty retornar null! (repetir isso para todos os gets desse projeto!)
-		
-		
 		return daoTime.getTodosTimes();
 	}
 	
 	public void atualizarTime(Time t) {
-		
 		daoTime.putTime(t);
-		
 	}
 	
 	public void deletarTime(Time t) {
-		
 		daoTime.deleteTime(t);
-		
 	}
 	
 }

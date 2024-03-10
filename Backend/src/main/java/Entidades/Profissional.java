@@ -62,7 +62,7 @@ public class Profissional {
 	public void setRacaProfissional(Raca racaProfissional) {
 		this.racaProfissional = racaProfissional;
 	}
-	*/
+	
 	public String getEspecialidadeProfissional() {
 		return especialidadeProfissional;
 	}
