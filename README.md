@@ -21,22 +21,31 @@ Este projeto é uma aplicação Web full stack desenvolvida para a matéria de E
 
 <a name="comoExecutar"></a>
 ## Como Executar
-- Certfique-se de que o banco de dados MySQL está sendo executado e [Configurado como mostrado aqui.](#configuracaoBanco)
-- Clone o repositório.
-- Inicie o servidor back-end, cujo conteúdo se encontra na pasta "Backend".
-    - Observe as [dependências do servidor back-end](#dependenciasBack).
-    - O padrão utilizado para DAO com o banco de dados é user:**root**, password:**root** e database:**es2-projeto1-final**, caso tenha configurado diferente em seu banco de dados, deve-se alterar as classes DAO em **src/main/java/DAO** com as credenciais utilizadas.
-    - A porta padrão definida para o back-end é **8080**.
 
-- Inicie o servidor front-end, o conteúdo se encontra em "Frontend"
-    - Observe as [dependências do servidor front-end](#dependenciasFront).
-    - Certifique-se de estar dentro da pasta "Frontend" e instale as dependências com:
-        - `npm install express`
-        - `npm install cors`
-        - `npm install axios`
-    - Execute o servidor front-end com :
-        - `node index.js`
-    - A porta padrão definida para o front-end é **3000**.
+- Clone o repositório.
+
+- #### Caso 1: Iniciando com docker (recomendado) ####
+
+    - Certifique-se de que as portas `3306`, `3000` e `8080` da sua máquina local não estejam em uso.
+    - Vá até a pasta que contém o arquivo `docker-compose.yml`
+    - Abra o terminal e digite `docker compose up --build`
+
+- #### Caso 2: Iniciando sem Docker ####
+    - Certfique-se de que o banco de dados MySQL está sendo executado e [Configurado como mostrado aqui.](#configuracaoBanco)
+    - Inicie o servidor back-end, cujo conteúdo se encontra na pasta "Backend".
+        - Observe as [dependências do servidor back-end](#dependenciasBack).
+        - O padrão utilizado para DAO com o banco de dados é user:**admin**, password:**admin** e database:**db**, caso tenha configurado diferente em seu banco de dados, deve-se fazer alteração no arquivo `Backend/src/main/java/Banco/BancoSQL.java`.
+        - A porta padrão definida para o back-end é **8080**.
+
+    - Inicie o servidor front-end, o conteúdo se encontra em "Frontend"
+        - Mude a URL_BASE dentro do arquivo `public/constantes.js` para `http://localhost:3000`
+        - Observe as [dependências do servidor front-end](#dependenciasFront).
+        - Certifique-se de estar dentro da pasta "Frontend" e instale as dependências com:
+            - `npm install`
+        - Execute o servidor front-end com :
+            - `node index.js`
+        - A porta padrão definida para o front-end é **3000**.
+
 
 - Acesse a aplicação através do navegador através link `localhost:3000`
 

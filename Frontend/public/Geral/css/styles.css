@@ -15,6 +15,28 @@
     box-shadow: 1px 1px 3px rgb(61, 61, 61);
 }
 
+@media only screen and (max-width: 768px) {
+    .lateral {
+        flex-direction: row; /* Altera a direção do flex para linha */
+        justify-content: center; /* Alinha os botões lado a lado */
+        width: 100%; /* Define a largura para ocupar toda a largura da tela */
+        height: 10%; /* Altura automática para acomodar o conteúdo */
+        position: relative; /* Remove a posição fixa */
+        align-items: center;
+    }
+
+    .btnLateral {
+        width: auto; /* Largura automática para se ajustar ao conteúdo */
+        margin: 0 5px; /* Margem entre os botões */
+    }
+
+    .btnLateral{
+        text-shadow: 1px 1px 3px rgb(92, 92, 92);
+        width: 85%;
+        box-shadow: 1px 1px 3px rgb(61, 61, 61);
+    }
+}
+
 .conteudo{
     width: 75%;
     display: flex;
