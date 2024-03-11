@@ -9,11 +9,9 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cors())
 
-
 app.get('/', async(req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
 
 app.get('/listarProfissionais', async(req, res) => {
     res.sendFile(path.join(__dirname, 'public', '/Profissional/listaProfissionais.html'));
@@ -26,46 +24,43 @@ app.get('/listarTimes', async(req, res) => {
 app.get('/time/:acao/:id', async(req, res) => {
     const acao = req.params.acao;
     if(acao == 'adicionar' || acao == 'remover' || acao == 'editar' || acao == 'visualizar')
-        res.sendFile(path.join(__dirname, 'public', './time/time.html'));
+        res.sendFile(path.join(__dirname, 'public', './Time/time.html'));
     else 
         res.send(`Ação "${acao}" não suportada.`); 
 });
 
 app.get('/time/adicionar', async(req, res) => {
-     res.sendFile(path.join(__dirname, 'public', './time/time.html'));
+     res.sendFile(path.join(__dirname, 'public', './Time/time.html'));
 });
-
 
 app.get('/profissional/:acao/:id', async(req, res) => {
     const acao = req.params.acao;
     if(acao == 'adicionar' || acao == 'remover' || acao == 'editar' || acao == 'visualizar')
-        res.sendFile(path.join(__dirname, 'public', './profissional/profissional.html'));
+        res.sendFile(path.join(__dirname, 'public', './Profissional/profissional.html'));
     else 
         res.send(`Ação "${acao}" não suportada.`); 
 }); 
 
 app.get('/profissional/adicionar', async(req, res) => {
-     res.sendFile(path.join(__dirname, 'public', './profissional/profissional.html'));
+     res.sendFile(path.join(__dirname, 'public', './Profissional/profissional.html'));
 });
 
-
 app.get('/listarProjetos', async(req, res) => {
-    res.sendFile(path.join(__dirname, 'public', '/projeto/listaProjetos.html'));
+    res.sendFile(path.join(__dirname, 'public', '/Projeto/listaProjetos.html'));
 });
 
 app.get('/projeto/:acao/:id', async(req, res) => {
     const acao = req.params.acao;
     console.log(acao)
     if(acao == 'adicionar' || acao == 'remover' || acao == 'editar' || acao == 'visualizar')
-        res.sendFile(path.join(__dirname, 'public', './projeto/projeto.html'));
+        res.sendFile(path.join(__dirname, 'public', './Projeto/projeto.html'));
     else 
         res.send(`Ação "${acao}" não suportada.`); 
 });
 
 app.get('/projeto/adicionar', async(req, res) => {
-     res.sendFile(path.join(__dirname, 'public', './projeto/projeto.html'));
+     res.sendFile(path.join(__dirname, 'public', './Projeto/projeto.html'));
 });
-
 
 
 // Listagens
@@ -75,7 +70,6 @@ app.get('/profissional/listar', async(req, res) => {
         res.send(response.data);
       });
 });
-
 
 app.get('/time/listar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_TIMES
@@ -98,7 +92,6 @@ app.get('/projeto/listar', async(req, res) => {
       });
 });
 
-
 app.get('/genero/listar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_GENEROS
     axios.get(url).then(async (response) => {
@@ -112,10 +105,6 @@ app.get('/raca/listar', async(req, res) => {
         res.send(response.data);
       });
 });
-
-
-
-
 
 
 // GETS
@@ -143,7 +132,6 @@ app.get('/projeto/:id', async(req, res) => {
         res.send(response.data);
       });
 });
-
 
 // PUTS
 app.put('/profissional/atualizar', async(req, res) => {
@@ -186,7 +174,6 @@ app.put('/projeto/atualizar', async(req, res) => {
     }
 });
 
-
 // POSTS
 app.post('/profissional/inserir', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_POST_PROFISSIONAL;
@@ -224,7 +211,6 @@ app.post('/projeto/inserir', async(req, res) => {
         res.status(500).send(error.message);
     }
 });
-
 
 
 // DELETES
@@ -274,7 +260,7 @@ app.listen(port, () => {
 // Rotas que o servidor frontend vai usar para se comunicar com o backend
 
 // BACKEND
-let URL_BASE_BACKEND = "http://localhost:8080";
+let URL_BASE_BACKEND = process.env.REACT_APP_API_URL;
 
 // Profissional
 let URL_BACKEND_GET_PROFISSIONAL = "/profissional"

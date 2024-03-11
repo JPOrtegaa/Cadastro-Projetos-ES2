@@ -15,7 +15,7 @@ public class TimeDao {
 	private long idTimeBase = 8;
 	
 	public TimeDao() {
-		banco = new BancoSQL("root", "jp17", "es2-projeto1-final");
+		banco = new BancoSQL(/*"root", "jp17", "es2-projeto1-final"*/);
 		daoProfissional = new ProfissionalDao();
 	}
 	

@@ -12,7 +12,7 @@ public class RacaDao {
 	private BancoSQL banco;
 	
 	public RacaDao() {
-		this.banco = new BancoSQL("root", "jp17", "es2-projeto1-final");
+		this.banco = new BancoSQL(/*"root", "jp17", "es2-projeto1-final"*/);
 	}
 	
 	public ArrayList<Raca> getListaRaca(){
