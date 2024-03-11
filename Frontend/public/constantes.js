@@ -2,7 +2,7 @@
 // Ou seja navegador -> frontend
 // Para as rotas frontend -> backend, veja o final do arquivo 'index.js'
 
-export let URL_BASE = "http://localhost:3000";
+export let URL_BASE = "http://18.116.40.237 :3000";
 
 // Profissional
 export let URL_GET_PROFISSIONAL = "/profissional"
