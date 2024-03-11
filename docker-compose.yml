@@ -34,7 +34,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      REACT_APP_API_URL: http://backend:8080
+      NODE_FRONTEND_APP_URL: http://backend:8080
 
 volumes:
   mysql_data:

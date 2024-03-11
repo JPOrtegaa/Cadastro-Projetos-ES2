@@ -14,7 +14,7 @@ public class ProjetoDao {
 	private TimeDao daoTime;
 	
 	public ProjetoDao() {
-		this.banco = new BancoSQL(/*"root", "jp17", "es2-projeto1-final"*/);
+		this.banco = new BancoSQL();
 		this.daoTime = new TimeDao();
 	}
 	

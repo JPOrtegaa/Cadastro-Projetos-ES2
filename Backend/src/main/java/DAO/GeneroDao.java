@@ -12,7 +12,7 @@ public class GeneroDao {
 	private BancoSQL banco;
 	
 	public GeneroDao() {
-		this.banco = new BancoSQL(/*"root", "jp17", "es2-projeto1-final"*/);
+		this.banco = new BancoSQL();
 	}
 	
 	public ArrayList<Genero> getListaGeneros(){
