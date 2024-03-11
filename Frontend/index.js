@@ -260,7 +260,7 @@ app.listen(port, () => {
 // Rotas que o servidor frontend vai usar para se comunicar com o backend
 
 // BACKEND
-let URL_BASE_BACKEND = process.env.REACT_APP_API_URL;
+let URL_BASE_BACKEND = process.env.NODE_FRONTEND_APP_URL;
 
 // Profissional
 let URL_BACKEND_GET_PROFISSIONAL = "/profissional"
