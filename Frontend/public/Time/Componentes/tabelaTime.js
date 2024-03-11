@@ -12,12 +12,11 @@ new Vue({
             </tr>
           </thead>
 
-          <tbody >
-            <div v-if="itens.length > 1">
-            <tr v-for="(item, index) in itens">
-                <td>{{ item.id }}</td>
-                <td>{{ item.nome }}</td>
-                <td> 
+          <tbody v-if="itens.length > 1">
+            <tr v-for="(item, index) in itens" >
+                <td v-if="item.id != 8">{{ item.id }}</td>
+                <td v-if="item.id != 8">{{ item.nome }}</td>
+                <td v-if="item.id != 8"> 
                   <a :href="item.linkVisualizacao">
                     <button type="button" class="btn btn-primary m-0" >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
@@ -47,7 +46,6 @@ new Vue({
                   </a>
                 </td>
             </tr>
-          </div>
           </tbody>
         </table>
       </div>
