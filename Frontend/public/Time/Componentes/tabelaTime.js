@@ -13,7 +13,8 @@ new Vue({
           </thead>
 
           <tbody >
-            <tr v-for="(item, index) in itens" v-if="itens.length > 1">
+            <div v-if="itens.length > 1">
+            <tr v-for="(item, index) in itens">
                 <td>{{ item.id }}</td>
                 <td>{{ item.nome }}</td>
                 <td> 
@@ -46,6 +47,7 @@ new Vue({
                   </a>
                 </td>
             </tr>
+          </div>
           </tbody>
         </table>
       </div>
