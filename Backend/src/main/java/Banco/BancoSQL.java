@@ -8,15 +8,18 @@ import java.sql.Statement;
 
 public class BancoSQL {
 	
-	private String db = "jdbc:mysql://localhost:3306/";
+	private String db = "jdbc:mysql://mysql:3306/";
+
 	private String user;
+
 	private String password;
+
 	private Connection conexao;
 	
-	public BancoSQL(String user, String password, String database) {
-		this.db += database;
-		this.user = user;
-		this.password = password;
+	public BancoSQL(/*String user, String password, String database*/) {
+		this.db += "db";
+		this.user = "admin";
+		this.password = "admin";
 		this.conexao = null;
 	}
 	

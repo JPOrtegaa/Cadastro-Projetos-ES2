@@ -16,7 +16,7 @@ public class ProfissionalDao {
 	private RacaDao daoRaca;
 	
 	public ProfissionalDao() {
-		banco = new BancoSQL("root", "jp17", "es2-projeto1-final");
+		banco = new BancoSQL(/*"root", "jp17", "es2-projeto1-final"*/);
 		daoGenero = new GeneroDao();
 		daoRaca = new RacaDao();
 	}
