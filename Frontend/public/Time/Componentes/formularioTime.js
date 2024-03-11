@@ -101,7 +101,6 @@ new Vue({
             this.idTime = id;
         },
         async getInfo(){
-            // Só para testes
 
             let url = URL_BASE + URL_GET_TIME + "/" + this.idTime
 
@@ -110,8 +109,6 @@ new Vue({
 
             axios.get(url).then(async (response) => {
             let data = response.data;
-            //self.idTime = data.id
-            console.log(data)
             self.nomeTime = data.nomeTime
             for(let i = 0; i < data.listaProfissional.length;i++){
                 self.listaProfissionaisDoTime.push(data.listaProfissional[i])
@@ -134,7 +131,6 @@ new Vue({
                 alert("Profissional já está no time!")
             }
 
-            console.log(this.listaProfissionaisDoTime)
         },
 
         jaPertenceAoTime(nome){

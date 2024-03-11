@@ -71,14 +71,18 @@ new Vue({
         }
     },
     mounted:async function(){
+
+        // Obtém o id do projeto e os times disponíveis
         await this.getId();
         await this.getTimes();
+
         let tipo = window.location.pathname.split("/")[2]
-        if(tipo == 'visualizar')
+
+        // Desabilida os campos caso seja visualização ou remoção
+        if(tipo == 'visualizar' || tipo == 'remover')
             this.disable = true;
 
         if( tipo != 'adicionar'){
-            
             await this.getInfo();
         }
 
@@ -111,8 +115,6 @@ new Vue({
         },
 
         async getInfo(){
-            // Só para testes
-
             let url = URL_BASE + URL_GET_PROJETO + "/" + this.idProjeto
 
             // Armazena 'this' em uma variável para uso dentro da função de callback
@@ -120,8 +122,6 @@ new Vue({
 
             axios.get(url).then(async (response) => {
                 let data = response.data;
-                console.log(data)
-                //self.idProjeto = data.idProjeto;
                 self.nomeProjeto = data.nomeProjeto;
                 self.nomeCliente = data.nomeCliente;
                 self.objetivo = data.objetivoProjeto;
@@ -180,6 +180,8 @@ new Vue({
 
         async enviarRequisicaoCriacaoEdicao(){
             let tipo = window.location.pathname.split("/")[2]
+
+            // Monta o corpo base da requsição
             let corpoDaRequisicao = {
                 nomeProjeto: this.nomeProjeto,
                 nomeCliente: this.nomeCliente,
@@ -198,11 +200,12 @@ new Vue({
                 p += 1;
             }
 
-            time = this.listaTimeResponsavel[p]
 
+            // Adiciona o tiem ao corpo da requisição
+            time = this.listaTimeResponsavel[p]
             corpoDaRequisicao.time = time;
 
-
+            // Monta a url com base no tipo da requisição
             let url = ""
 
             if(tipo == 'editar'){

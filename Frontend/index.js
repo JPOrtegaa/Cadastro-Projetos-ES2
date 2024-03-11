@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cors())
 
+// Rotas para servir paginas HTML
 app.get('/', async(req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -51,7 +52,6 @@ app.get('/listarProjetos', async(req, res) => {
 
 app.get('/projeto/:acao/:id', async(req, res) => {
     const acao = req.params.acao;
-    console.log(acao)
     if(acao == 'adicionar' || acao == 'remover' || acao == 'editar' || acao == 'visualizar')
         res.sendFile(path.join(__dirname, 'public', './Projeto/projeto.html'));
     else 
@@ -63,194 +63,147 @@ app.get('/projeto/adicionar', async(req, res) => {
 });
 
 
-// Listagens
+
+
+// Conexão com o Back-end
+
+// Rotas para listagens
 app.get('/profissional/listar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_PROFISSIONAIS
-    axios.get(url).then(async (response) => {
-        res.send(response.data);
-      });
+    listarItem(url,res);
 });
 
 app.get('/time/listar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_TIMES
-    axios.get(url).then(async (response) => {
-        res.send(response.data);
-      });
+    listarItem(url,res);
 });
 
 app.get('/projeto/listar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_PROJETOS
-    axios.get(url).then(async (response) => {
-        res.send(response.data);
-      });
+    listarItem(url,res);
 });
 
 app.get('/projeto/listar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_PROJETOS
-    axios.get(url).then(async (response) => {
-        res.send(response.data);
-      });
+    listarItem(url,res);
 });
 
 app.get('/genero/listar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_GENEROS
-    axios.get(url).then(async (response) => {
-        res.send(response.data);
-      });
+    listarItem(url,res);
 });
 
 app.get('/raca/listar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_GET_LISTAR_RACAS
-    axios.get(url).then(async (response) => {
-        res.send(response.data);
-      });
+    listarItem(url,res);
 });
 
-
-// GETS
-app.get('/profissional/:id', async(req, res) => {
-    const id = req.params.id;
-    let url = URL_BASE_BACKEND + URL_BACKEND_GET_PROFISSIONAL + "/" + id
+function listarItem(url,res){
     axios.get(url).then(async (response) => {
         res.send(response.data);
       });
+}
+
+// Rotas para requisições GETS
+app.get('/profissional/:id', async(req, res) => {
+    let url = URL_BASE_BACKEND + URL_BACKEND_GET_PROFISSIONAL + "/" + req.params.id
+    getItem(url,res)
 });
 
 app.get('/time/:id', async(req, res) => {
-    const id = req.params.id;
-    let url = URL_BASE_BACKEND + URL_BACKEND_GET_TIME + "/" + id
-    axios.get(url).then(async (response) => {
-        res.send(response.data);
-      });
+    let url = URL_BASE_BACKEND + URL_BACKEND_GET_TIME + "/" + req.params.id
+    getItem(url,res)
 });
 
 app.get('/projeto/:id', async(req, res) => {
-    const id = req.params.id;
-    console.log(id)
-    let url = URL_BASE_BACKEND + URL_BACKEND_GET_PROJETO + "/" + id
-    axios.get(url).then(async (response) => {
-        res.send(response.data);
-      });
+    let url = URL_BASE_BACKEND + URL_BACKEND_GET_PROJETO + "/" + req.params.id
+    getItem(url,res)
 });
 
-// PUTS
+
+function getItem(url,res){
+    axios.get(url).then(async (response) => {
+        res.send(response.data);
+    });
+}
+
+
+// Rotas para requisições PUTS
 app.put('/profissional/atualizar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_PUT_PROFISSIONAL;
-    let jsonBody = req.body.corpoDaRequisicao;
-    console.log(jsonBody)
-
-    try {
-        const response = await axios.put(url, jsonBody);
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+    await putItem(url,req.body.corpoDaRequisicao,res)
 });
 
 app.put('/time/atualizar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_PUT_TIME;
-    let jsonBody = req.body.corpoDaRequisicao;
-
-    console.log(jsonBody)
-    
-    try {
-        const response = await axios.put(url, jsonBody);
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+    await putItem(url,req.body.corpoDaRequisicao,res)
 });
 
 app.put('/projeto/atualizar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_PUT_PROJETO;
-    let jsonBody = req.body.corpoDaRequisicao;
-    console.log(jsonBody)
+    await putItem(url,req.body.corpoDaRequisicao,res)
+});
 
+
+async function putItem(url,jsonBody, res){
     try {
         const response = await axios.put(url, jsonBody);
         res.send(response.data);
     } catch (error) {
         res.status(500).send(error.message);
     }
-});
+}
 
-// POSTS
+// Rotas para requisições POSTS
 app.post('/profissional/inserir', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_POST_PROFISSIONAL;
-    console.log(req.body)
-    let jsonBody = req.body.corpoDaRequisicao;
-    console.log(jsonBody)
-    try {
-        const response = await axios.post(url, jsonBody);
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+    await postItem(url,req.body.corpoDaRequisicao, res)
 });
 
 app.post('/time/inserir', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_POST_TIME;
-    let jsonBody = req.body.corpoDaRequisicao;
-    console.log(jsonBody)
-    try {
-        const response = await axios.post(url, jsonBody);
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+    await postItem(url,req.body.corpoDaRequisicao, res)
 });
 
 app.post('/projeto/inserir', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_POST_PROJETO;
-    let jsonBody = req.body.corpoDaRequisicao;
-    console.log(jsonBody)
+    await postItem(url,req.body.corpoDaRequisicao, res)
+});
+
+async function postItem(url, jsonBody, res){
     try {
         const response = await axios.post(url, jsonBody);
         res.send(response.data);
     } catch (error) {
         res.status(500).send(error.message);
     }
-});
 
+}
 
-// DELETES
+// Rotas para requisições DELETES
 app.delete('/profissional/deletar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_PROFISSIONAL
-    let jsonBody = req.body.source;
-
-    try {
-        const response = await axios.delete(url, { data: jsonBody});
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+    await deleteItem(url,req.body.source,res)
 });
 
 app.delete('/time/deletar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_TIME 
-    let jsonBody = req.body.source;
-
-    try {
-        const response = await axios.delete(url, { data: jsonBody});
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+    await deleteItem(url,req.body.source,res)
 });
 
 app.delete('/projeto/deletar', async(req, res) => {
     let url = URL_BASE_BACKEND + URL_BACKEND_DELETE_PROJETO
-    let jsonBody = req.body.source;
+    await deleteItem(url,req.body.source,res)
+});
 
+async function deleteItem(url,jsonBody,res){
     try {
         const response = await axios.delete(url, { data: jsonBody});
         res.send(response.data);
     } catch (error) {
         res.status(500).send(error.message);
     }
-});
-
-
+}
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

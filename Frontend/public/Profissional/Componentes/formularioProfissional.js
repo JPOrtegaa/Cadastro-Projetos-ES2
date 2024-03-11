@@ -87,22 +87,25 @@ new Vue({
     },
     mounted:async function(){
         let tipo = window.location.pathname.split("/")[2]
+
+        // Carrega os generos e raças
         await this.getGeneros();
         await this.getRacas();
 
-
+        // Pega o id da URL
         await this.getId();
 
+        // Caso seja visualizar ou remover, não dá pra editar os campos
         if(tipo == 'visualizar' || tipo == 'remover'){
             this.disable = true;
         }
-            
 
+        // Se não for adicionar, pega as informações do item
         if( tipo != 'adicionar')
             await this.getInfo();
 
 
-
+        // Fica esperando por um sinal ao clicar nos botões da lateral 
         EventBus.$on('confirmarCriacaoEdicao',() => {
             if(this.validarCampos()){
                 this.enviarRequisicaoCriacaoEdicao();
@@ -161,39 +164,20 @@ new Vue({
         axios.get(url).then(async (response) => {
             let data = response.data;
 
-            console.log(data)
-            //self.idProfissional = data.idProfissional
+            // Preenche os campos da tela com as informações do back-end
             self.nomeProfissional = data.nomeProfissional
             self.enderecoProfissional = data.enderecoProfissional
             self.dataNascimentoProfissional = data.dataNascimento
             self.listaTime = data.listaTime
-            // Tratar esses campos
+            
+
             let genero = data.generoProfissional.nomeGenero;
             self.idGenero = data.generoProfissional.idGenero
             self.generoProfissional = genero
 
-            /*if (this.listaGeneros.includes(genero)){
-                self.generoProfissional = genero
-                self.generoProfissionalTexto = genero
-            }
-
-            else{
-                self.generoProfissional = "Outro"
-                self.generoProfissionalTexto = genero
-            }*/
-
             let raca = data.racaProfissional.nomeRaca;
             self.idRaca = data.racaProfissional.idRaca
             self.racaProfissional = raca
-
-            /*if (this.listaRacas.includes(raca)){
-                self.racaProfissional = raca
-                
-            }
-            else{
-                self.racaProfissional = "Outro"
-                self.racaProfissionalTexto = raca
-            }*/
 
             let especialidade = data.especialidadeProfissional;
             if (this.listaEspecialidades.includes(especialidade)){
@@ -256,6 +240,8 @@ new Vue({
 
         async enviarRequisicaoCriacaoEdicao(){
             let tipo = window.location.pathname.split("/")[2]
+
+            // Procura pelo id do Genero a partir do nome do genero
             let p = 0;
             for(let i = 0; i < this.listaGeneros.length; i++){
                 if(this.listaGeneros[p].nome == this.generoProfissional)
@@ -267,6 +253,8 @@ new Vue({
 
             let idGenero = this.listaGeneros[p].id
 
+
+            // Procura pelo id da Raça a partir do nome da raça
             p = 0;
             for(let i = 0; i < this.listaRacas.length; i++){
                 if(this.listaRacas[p].nome == this.racaProfissional)
@@ -278,6 +266,8 @@ new Vue({
 
             let idRaca = this.listaRacas[p].id
 
+
+            // Monta o corpo base da requisição
             let corpoDaRequisicao = {
                 nomeProfissional: this.nomeProfissional,
                 dataNascimento: this.dataNascimentoProfissional,
@@ -294,11 +284,13 @@ new Vue({
                 listaTimes: null
             };  
 
+            // Caso seja edição, deve-se adicionar também o id do Profissional
             if(tipo == 'editar'){
                 corpoDaRequisicao.idProfissional = this.idProfissional;
             }
                 
 
+            // A URL é montada com base no tipo da requisição
             let url = ""
 
             if(tipo == 'editar'){

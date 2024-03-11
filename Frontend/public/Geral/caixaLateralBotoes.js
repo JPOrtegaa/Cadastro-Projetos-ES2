@@ -72,7 +72,6 @@ new Vue({
             }
         },
         editar(){
-            console.log(window.location)
             window.location.href = window.location.href.replace('visualizar','editar')
         }
     }

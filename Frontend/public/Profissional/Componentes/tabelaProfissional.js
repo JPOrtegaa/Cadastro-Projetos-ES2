@@ -3,6 +3,8 @@ new Vue({
     el: '#tabela',
     template: `  
     <div class="container-fluid">
+
+    
         <table class="table table-hover table-bordered align-middle m-0 text-center">
           <thead class="table-light">
             <tr style="width:100%">   
@@ -73,7 +75,6 @@ new Vue({
 
         axios.get(url).then(async (response) => {
           let data = response.data;
-          console.log(data)
 
           for (let i = 0; i < data.length; i++) {
             let obj = {
